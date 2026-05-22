@@ -2,89 +2,83 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react'
 import type { UserProgress } from '../types'
-import { getAllLessons, getCourseById } from '../data/courses'
+import { api, ensureLearnerId } from '../api/client'
+import { useData } from './DataContext'
 
-const STORAGE_KEY = 'fabeon-learning-progress'
-
-function loadProgress(): UserProgress {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) return JSON.parse(raw) as UserProgress
-  } catch {
-    /* ignore */
-  }
-  return { enrolledCourses: [], completedLessons: {} }
+const emptyProgress: UserProgress = {
+  enrolledCourses: [],
+  completedLessons: {},
 }
 
 interface LearningContextValue {
   progress: UserProgress
-  enroll: (courseId: string) => void
-  unenroll: (courseId: string) => void
+  loading: boolean
+  enroll: (courseId: string) => Promise<void>
+  unenroll: (courseId: string) => Promise<void>
   isEnrolled: (courseId: string) => boolean
-  completeLesson: (courseId: string, lessonId: string) => void
+  completeLesson: (courseId: string, lessonId: string) => Promise<void>
   isLessonComplete: (courseId: string, lessonId: string) => boolean
   getCourseProgress: (courseId: string) => number
-  setLastVisited: (courseId: string, lessonId: string) => void
+  setLastVisited: (courseId: string, lessonId: string) => Promise<void>
 }
 
 const LearningContext = createContext<LearningContextValue | null>(null)
 
 export function LearningProvider({ children }: { children: ReactNode }) {
-  const [progress, setProgress] = useState<UserProgress>(loadProgress)
+  const { courses } = useData()
+  const [progress, setProgress] = useState<UserProgress>(emptyProgress)
+  const [loading, setLoading] = useState(true)
+  const [lessonTotals, setLessonTotals] = useState<Record<string, number>>({})
 
-  const persist = useCallback((next: UserProgress) => {
-    setProgress(next)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+  const loadProgress = useCallback(async () => {
+    try {
+      await ensureLearnerId()
+      const p = await api.getProgress()
+      setProgress(p)
+    } catch {
+      setProgress(emptyProgress)
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
-  const enroll = useCallback(
-    (courseId: string) => {
-      if (progress.enrolledCourses.includes(courseId)) return
-      persist({
-        ...progress,
-        enrolledCourses: [...progress.enrolledCourses, courseId],
-      })
-    },
-    [progress, persist]
-  )
+  useEffect(() => {
+    loadProgress()
+  }, [loadProgress])
 
-  const unenroll = useCallback(
-    (courseId: string) => {
-      const { [courseId]: _, ...rest } = progress.completedLessons
-      persist({
-        ...progress,
-        enrolledCourses: progress.enrolledCourses.filter((id) => id !== courseId),
-        completedLessons: rest,
-      })
-    },
-    [progress, persist]
-  )
+  useEffect(() => {
+    const totals: Record<string, number> = {}
+    for (const c of courses) {
+      totals[c.id] = c.lessonsCount
+    }
+    setLessonTotals(totals)
+  }, [courses])
+
+  const enroll = useCallback(async (courseId: string) => {
+    const p = await api.enroll(courseId)
+    setProgress(p)
+  }, [])
+
+  const unenroll = useCallback(async (courseId: string) => {
+    const p = await api.unenroll(courseId)
+    setProgress(p)
+  }, [])
 
   const isEnrolled = useCallback(
     (courseId: string) => progress.enrolledCourses.includes(courseId),
     [progress.enrolledCourses]
   )
 
-  const completeLesson = useCallback(
-    (courseId: string, lessonId: string) => {
-      const existing = progress.completedLessons[courseId] ?? []
-      if (existing.includes(lessonId)) return
-      persist({
-        ...progress,
-        completedLessons: {
-          ...progress.completedLessons,
-          [courseId]: [...existing, lessonId],
-        },
-        lastVisitedLesson: { courseId, lessonId },
-      })
-    },
-    [progress, persist]
-  )
+  const completeLesson = useCallback(async (courseId: string, lessonId: string) => {
+    const p = await api.completeLesson(courseId, lessonId)
+    setProgress(p)
+  }, [])
 
   const isLessonComplete = useCallback(
     (courseId: string, lessonId: string) =>
@@ -94,25 +88,22 @@ export function LearningProvider({ children }: { children: ReactNode }) {
 
   const getCourseProgress = useCallback(
     (courseId: string) => {
-      const course = getCourseById(courseId)
-      if (!course) return 0
-      const total = getAllLessons(course).length
+      const total = lessonTotals[courseId] ?? 0
       const done = (progress.completedLessons[courseId] ?? []).length
       return total > 0 ? Math.round((done / total) * 100) : 0
     },
-    [progress.completedLessons]
+    [progress.completedLessons, lessonTotals]
   )
 
-  const setLastVisited = useCallback(
-    (courseId: string, lessonId: string) => {
-      persist({ ...progress, lastVisitedLesson: { courseId, lessonId } })
-    },
-    [progress, persist]
-  )
+  const setLastVisited = useCallback(async (courseId: string, lessonId: string) => {
+    const p = await api.setLastVisited(courseId, lessonId)
+    setProgress(p)
+  }, [])
 
   const value = useMemo(
     () => ({
       progress,
+      loading,
       enroll,
       unenroll,
       isEnrolled,
@@ -123,6 +114,7 @@ export function LearningProvider({ children }: { children: ReactNode }) {
     }),
     [
       progress,
+      loading,
       enroll,
       unenroll,
       isEnrolled,

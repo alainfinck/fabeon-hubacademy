@@ -1,9 +1,15 @@
 import { Calendar, MapPin, Users, Clock } from 'lucide-react'
-import { workshops } from '../data/workshops'
 import { levelLabels } from '../data/categories'
+import { useData } from '../context/DataContext'
 import { formatDate } from '../utils/format'
+import { PageError, PageLoader } from '../components/PageLoader'
 
 export function Workshops() {
+  const { workshops, loading, error, refresh } = useData()
+
+  if (loading) return <PageLoader />
+  if (error) return <PageError message={error} onRetry={refresh} />
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-12">

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { DataProvider } from './context/DataContext'
 import { LearningProvider } from './context/LearningContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { Layout } from './components/Layout'
@@ -13,8 +14,9 @@ import { About } from './pages/About'
 export default function App() {
   return (
     <ThemeProvider>
-      <LearningProvider>
-        <BrowserRouter>
+      <DataProvider>
+        <LearningProvider>
+          <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Home />} />
@@ -26,8 +28,9 @@ export default function App() {
             <Route path="a-propos" element={<About />} />
           </Route>
         </Routes>
-        </BrowserRouter>
-      </LearningProvider>
+          </BrowserRouter>
+        </LearningProvider>
+      </DataProvider>
     </ThemeProvider>
   )
 }

@@ -1,15 +1,17 @@
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search, SlidersHorizontal } from 'lucide-react'
-import { courses } from '../data/courses'
-import { categories, levelLabels, formatLabels } from '../data/categories'
+import { levelLabels, formatLabels } from '../data/categories'
+import { useData } from '../context/DataContext'
 import { CourseCard } from '../components/CourseCard'
+import { PageError, PageLoader } from '../components/PageLoader'
 import type { CategoryId, CourseLevel, CourseFormat } from '../types'
 
 const filterActive = 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
 const filterIdle = 'text-muted hover:text-heading'
 
 export function Catalog() {
+  const { courses, categories, loading, error, refresh } = useData()
   const [searchParams, setSearchParams] = useSearchParams()
   const initialCategory = searchParams.get('categorie') as CategoryId | null
   const [search, setSearch] = useState('')
@@ -46,6 +48,9 @@ export function Catalog() {
     }
     setSearchParams(searchParams)
   }
+
+  if (loading) return <PageLoader />
+  if (error) return <PageError message={error} onRetry={refresh} />
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

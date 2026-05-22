@@ -1,21 +1,23 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BookOpen, Play, TrendingUp, Award } from 'lucide-react'
-import { courses, getCourseById } from '../data/courses'
+import type { Course } from '../types'
+import { useData } from '../context/DataContext'
 import { useLearning } from '../context/LearningContext'
 import { CourseCard } from '../components/CourseCard'
 import { ProgressBar } from '../components/ProgressBar'
-import { getAllLessons, getLesson } from '../data/courses'
+import { PageError, PageLoader } from '../components/PageLoader'
+import { getLesson } from '../lib/courseUtils'
 
 export function Dashboard() {
-  const { progress, getCourseProgress, isEnrolled } = useLearning()
+  const { courses, loading: dataLoading, error, refresh, getCourse } = useData()
+  const { progress, getCourseProgress, isEnrolled, loading: progressLoading } =
+    useLearning()
 
   const enrolledCourses = courses.filter((c) => isEnrolled(c.id))
   const suggested = courses.filter((c) => !isEnrolled(c.id)).slice(0, 3)
 
-  const totalLessons = enrolledCourses.reduce(
-    (acc, c) => acc + getAllLessons(c).length,
-    0
-  )
+  const totalLessons = enrolledCourses.reduce((acc, c) => acc + c.lessonsCount, 0)
   const completedLessons = enrolledCourses.reduce(
     (acc, c) => acc + (progress.completedLessons[c.id]?.length ?? 0),
     0
@@ -24,9 +26,26 @@ export function Dashboard() {
     totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0
 
   const lastVisit = progress.lastVisitedLesson
-  const lastCourse = lastVisit ? getCourseById(lastVisit.courseId) : null
+  const lastCourseSummary = lastVisit
+    ? courses.find((c) => c.id === lastVisit.courseId)
+    : null
+  const [lastCourseFull, setLastCourseFull] = useState<Course | null>(null)
+
+  useEffect(() => {
+    if (!lastCourseSummary) {
+      setLastCourseFull(null)
+      return
+    }
+    getCourse(lastCourseSummary.slug).then(setLastCourseFull)
+  }, [lastCourseSummary?.slug, getCourse])
+
+  if (dataLoading || progressLoading) return <PageLoader />
+  if (error) return <PageError message={error} onRetry={refresh} />
+
   const lastLesson =
-    lastCourse && lastVisit ? getLesson(lastCourse, lastVisit.lessonId) : null
+    lastCourseFull && lastVisit
+      ? getLesson(lastCourseFull, lastVisit.lessonId)
+      : null
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -57,15 +76,15 @@ export function Dashboard() {
         </div>
       )}
 
-      {lastCourse && lastLesson && (
+      {lastCourseSummary && lastLesson && (
         <div className="mt-10 p-6 rounded-2xl border border-brand-500/20 bg-brand-500/5">
           <p className="text-xs text-brand-600 dark:text-brand-400 font-medium uppercase tracking-wide mb-2">
             Reprendre
           </p>
           <h2 className="font-display text-lg font-semibold text-heading">{lastLesson.title}</h2>
-          <p className="text-sm text-muted mt-1">{lastCourse.title}</p>
+          <p className="text-sm text-muted mt-1">{lastCourseSummary.title}</p>
           <Link
-            to={`/cours/${lastCourse.slug}/lecon/${lastLesson.id}`}
+            to={`/cours/${lastCourseSummary.slug}/lecon/${lastLesson.id}`}
             className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
           >
             <Play className="w-4 h-4" />

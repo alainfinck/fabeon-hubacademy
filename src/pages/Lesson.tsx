@@ -8,8 +8,10 @@ import {
   HelpCircle,
   Wrench,
 } from 'lucide-react'
-import { getCourseBySlug, getAllLessons, getLesson } from '../data/courses'
+import { PageLoader } from '../components/PageLoader'
 import { useLearning } from '../context/LearningContext'
+import { useCourse } from '../hooks/useCourse'
+import { getAllLessons, getLesson } from '../lib/courseUtils'
 
 const typeConfig = {
   video: { icon: Video, label: 'Vidéo', color: 'text-cyan-600 dark:text-cyan-400' },
@@ -20,8 +22,7 @@ const typeConfig = {
 
 export function Lesson() {
   const { slug, lessonId } = useParams<{ slug: string; lessonId: string }>()
-  const course = slug ? getCourseBySlug(slug) : undefined
-  const lesson = course && lessonId ? getLesson(course, lessonId) : undefined
+  const { course, loading, error } = useCourse(slug)
   const {
     isEnrolled,
     enroll,
@@ -30,7 +31,11 @@ export function Lesson() {
     setLastVisited,
   } = useLearning()
 
-  if (!course || !lesson || !lessonId) return <Navigate to="/cours" replace />
+  if (loading) return <PageLoader />
+  if (error || !course || !lessonId) return <Navigate to="/cours" replace />
+
+  const lesson = getLesson(course, lessonId)
+  if (!lesson) return <Navigate to={`/cours/${course.slug}`} replace />
 
   const allLessons = getAllLessons(course)
   const currentIndex = allLessons.findIndex((l) => l.id === lessonId)
@@ -41,13 +46,17 @@ export function Lesson() {
   const TypeIcon = typeConfig[lesson.type].icon
 
   const handleComplete = () => {
-    if (!enrolled) enroll(course.id)
-    completeLesson(course.id, lessonId)
+    void (async () => {
+      if (!enrolled) await enroll(course.id)
+      await completeLesson(course.id, lessonId)
+    })()
   }
 
   const handleStart = () => {
-    if (!enrolled) enroll(course.id)
-    setLastVisited(course.id, lessonId)
+    void (async () => {
+      if (!enrolled) await enroll(course.id)
+      await setLastVisited(course.id, lessonId)
+    })()
   }
 
   return (

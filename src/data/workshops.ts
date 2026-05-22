@@ -1,4 +1,5 @@
 import type { Workshop } from '../types'
+import { CONTACT } from './contact'
 
 export const workshops: Workshop[] = [
   {
@@ -8,7 +9,7 @@ export const workshops: Workshop[] = [
     description:
       'Concevez et fabriquez un présentoir retail avec impression UV, découpe Zünd et intégration LED. Matériel fourni sur place.',
     date: '2026-06-14',
-    location: 'Fabeon — Atelier Lyon',
+    location: CONTACT.workshopLocation,
     seats: 12,
     seatsLeft: 4,
     duration: '2 jours',
@@ -24,7 +25,7 @@ export const workshops: Workshop[] = [
     description:
       'Apportez vos échantillons : audit complet de votre chaîne colorimétrique avec spectro et création de profil sur site.',
     date: '2026-07-05',
-    location: 'Fabeon — Atelier Paris',
+    location: CONTACT.workshopLocation,
     seats: 8,
     seatsLeft: 2,
     duration: '1 jour',
@@ -40,7 +41,7 @@ export const workshops: Workshop[] = [
     description:
       'Journée pratique sur table Zünd : router Dibond, rainures V-cut, découpe carton et paramétrage Cut Center.',
     date: '2026-08-22',
-    location: 'Fabeon — Atelier Lyon',
+    location: CONTACT.workshopLocation,
     seats: 10,
     seatsLeft: 7,
     duration: '1 jour',

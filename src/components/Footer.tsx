@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { GraduationCap, Mail, MapPin, Phone } from 'lucide-react'
+import { CONTACT } from '../data/contact'
 
 export function Footer() {
   return (
@@ -28,18 +29,32 @@ export function Footer() {
           </div>
           <div>
             <h4 className="font-display font-semibold text-heading mb-3">Contact</h4>
-            <ul className="space-y-2 text-sm text-muted">
+            <ul className="space-y-3 text-sm text-muted">
               <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-brand-600 dark:text-brand-500" />
-                formation@fabeon.fr
+                <Mail className="w-4 h-4 text-brand-600 dark:text-brand-500 shrink-0" />
+                <a
+                  href={`mailto:${CONTACT.email}`}
+                  className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                >
+                  {CONTACT.email}
+                </a>
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-brand-600 dark:text-brand-500" />
-                +33 4 00 00 00 00
+                <Phone className="w-4 h-4 text-brand-600 dark:text-brand-500 shrink-0" />
+                <a
+                  href={CONTACT.phoneHref}
+                  className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+                >
+                  {CONTACT.phone}
+                </a>
               </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-brand-600 dark:text-brand-500" />
-                Lyon & Paris
+              <li className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-brand-600 dark:text-brand-500 shrink-0 mt-0.5" />
+                <address className="not-italic leading-relaxed">
+                  {CONTACT.addressLine1}
+                  <br />
+                  {CONTACT.addressLine2}
+                </address>
               </li>
             </ul>
           </div>

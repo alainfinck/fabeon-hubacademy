@@ -7,10 +7,10 @@ import {
   Play,
   CheckCircle2,
 } from 'lucide-react'
-import { courses } from '../data/courses'
-import { categories } from '../data/categories'
+import { useData } from '../context/DataContext'
 import { CourseCard } from '../components/CourseCard'
 import { CategoryIcon } from '../components/CategoryIcon'
+import { PageError, PageLoader } from '../components/PageLoader'
 
 const stats = [
   { value: '8+', label: 'Parcours certifiants' },
@@ -23,11 +23,15 @@ const features = [
   'Contenus rédigés par des experts terrain',
   'Machines réelles : Zünd, HP Latex, Caldera',
   'Progression sauvegardée dans votre espace',
-  'Ateliers pratiques Lyon & Paris',
+  'Ateliers pratiques à Illkirch-Graffenstaden',
 ]
 
 export function Home() {
+  const { courses, categories, loading, error, refresh } = useData()
   const featured = courses.filter((c) => c.featured).slice(0, 4)
+
+  if (loading) return <PageLoader />
+  if (error) return <PageError message={error} onRetry={refresh} />
 
   return (
     <>

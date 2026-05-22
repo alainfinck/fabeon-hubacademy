@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Target, Users, Cpu, ArrowRight } from 'lucide-react'
+import { Target, Users, Cpu, ArrowRight, MapPin, Phone } from 'lucide-react'
+import { CONTACT } from '../data/contact'
 
 const values = [
   {
@@ -75,13 +76,25 @@ export function About() {
         </h2>
         <p className="text-muted mt-3 max-w-xl leading-relaxed">
           Licences multi-utilisateurs, parcours personnalisés et sessions intra-entreprise dans vos
-          locaux ou dans nos ateliers équipés Lyon et Paris.
+          locaux ou dans notre atelier équipé à Illkirch-Graffenstaden.
         </p>
+        <ul className="mt-6 space-y-2 text-sm text-muted">
+          <li className="flex items-start gap-2">
+            <MapPin className="w-4 h-4 text-brand-600 dark:text-brand-500 shrink-0 mt-0.5" />
+            {CONTACT.addressFull}
+          </li>
+          <li className="flex items-center gap-2">
+            <Phone className="w-4 h-4 text-brand-600 dark:text-brand-500 shrink-0" />
+            <a href={CONTACT.phoneHref} className="hover:text-brand-600 dark:hover:text-brand-400">
+              {CONTACT.phone}
+            </a>
+          </li>
+        </ul>
         <a
-          href="mailto:formation@fabeon.fr"
+          href={`mailto:${CONTACT.email}`}
           className="inline-flex items-center gap-2 mt-6 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold transition-colors"
         >
-          formation@fabeon.fr
+          {CONTACT.email}
           <ArrowRight className="w-5 h-5" />
         </a>
       </section>

@@ -508,20 +508,7 @@ export const courses: Course[] = [
   },
 ]
 
-export function getCourseBySlug(slug: string): Course | undefined {
-  return courses.find((c) => c.slug === slug)
-}
-
+/** Données sources pour le seed SQLite — l'app lit l'API, pas ce fichier. */
 export function getCourseById(id: string): Course | undefined {
   return courses.find((c) => c.id === id)
-}
-
-export function getAllLessons(course: Course) {
-  return course.modules.flatMap((m) =>
-    m.lessons.map((l) => ({ ...l, moduleId: m.id, moduleTitle: m.title }))
-  )
-}
-
-export function getLesson(course: Course, lessonId: string) {
-  return getAllLessons(course).find((l) => l.id === lessonId)
 }

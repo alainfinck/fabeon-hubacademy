@@ -9,11 +9,13 @@ import {
   Monitor,
   Wrench,
 } from 'lucide-react'
-import { getCourseBySlug, getAllLessons } from '../data/courses'
 import { levelLabels, formatLabels } from '../data/categories'
 import { CategoryBadge } from '../components/CategoryBadge'
 import { ProgressBar } from '../components/ProgressBar'
+import { PageLoader } from '../components/PageLoader'
 import { useLearning } from '../context/LearningContext'
+import { useCourse } from '../hooks/useCourse'
+import { getAllLessons } from '../lib/courseUtils'
 import { formatDuration } from '../utils/format'
 
 const lessonTypeIcons: Record<string, string> = {
@@ -25,10 +27,11 @@ const lessonTypeIcons: Record<string, string> = {
 
 export function CourseDetail() {
   const { slug } = useParams<{ slug: string }>()
-  const course = slug ? getCourseBySlug(slug) : undefined
+  const { course, loading, error } = useCourse(slug)
   const { isEnrolled, enroll, unenroll, getCourseProgress, isLessonComplete } = useLearning()
 
-  if (!course) return <Navigate to="/cours" replace />
+  if (loading) return <PageLoader />
+  if (error || !course) return <Navigate to="/cours" replace />
 
   const enrolled = isEnrolled(course.id)
   const progress = getCourseProgress(course.id)
@@ -157,9 +160,9 @@ export function CourseDetail() {
                     <Play className="w-5 h-5" />
                     {progress > 0 ? 'Continuer' : 'Commencer'}
                   </Link>
-                  <button
-                    type="button"
-                    onClick={() => unenroll(course.id)}
+                <button
+                  type="button"
+                  onClick={() => void unenroll(course.id)}
                     className="w-full py-2 text-sm text-faint hover:text-muted transition-colors"
                   >
                     Se désinscrire
@@ -168,7 +171,7 @@ export function CourseDetail() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => enroll(course.id)}
+                  onClick={() => void enroll(course.id)}
                   className="w-full py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
                 >
                   S'inscrire au cours
