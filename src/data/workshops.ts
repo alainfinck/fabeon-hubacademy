@@ -1,0 +1,68 @@
+import type { Workshop } from '../types'
+
+export const workshops: Workshop[] = [
+  {
+    id: 'w1',
+    slug: 'atelier-retail-led',
+    title: 'Retail LED — Du concept au prototype',
+    description:
+      'Concevez et fabriquez un présentoir retail avec impression UV, découpe Zünd et intégration LED. Matériel fourni sur place.',
+    date: '2026-06-14',
+    location: 'Fabeon — Atelier Lyon',
+    seats: 12,
+    seatsLeft: 4,
+    duration: '2 jours',
+    equipment: ['HP UV', 'Zünd G3', 'Poste LED', 'Dibond & Forex'],
+    level: 'intermediaire',
+    price: '890 € HT',
+    imageGradient: 'from-rose-500 to-purple-700',
+  },
+  {
+    id: 'w2',
+    slug: 'calibration-terrain',
+    title: 'Calibration terrain — Audit colorimétrique',
+    description:
+      'Apportez vos échantillons : audit complet de votre chaîne colorimétrique avec spectro et création de profil sur site.',
+    date: '2026-07-05',
+    location: 'Fabeon — Atelier Paris',
+    seats: 8,
+    seatsLeft: 2,
+    duration: '1 jour',
+    equipment: ['X-Rite i1Pro', 'Barbieri LFP', 'Charts IT8'],
+    level: 'avance',
+    price: '650 € HT',
+    imageGradient: 'from-violet-500 to-indigo-700',
+  },
+  {
+    id: 'w3',
+    slug: 'zund-intensive',
+    title: 'Zünd intensif — Router & finitions',
+    description:
+      'Journée pratique sur table Zünd : router Dibond, rainures V-cut, découpe carton et paramétrage Cut Center.',
+    date: '2026-08-22',
+    location: 'Fabeon — Atelier Lyon',
+    seats: 10,
+    seatsLeft: 7,
+    duration: '1 jour',
+    equipment: ['Zünd G3 L-2500', 'Fraises HF', 'Module cutter'],
+    level: 'intermediaire',
+    price: '520 € HT',
+    imageGradient: 'from-emerald-500 to-teal-700',
+  },
+  {
+    id: 'w4',
+    slug: 'caldera-automation',
+    title: 'Caldera — Automatisation atelier',
+    description:
+      'Hotfolders, scripts et nesting avancé pour ateliers traitant plus de 50 jobs/jour.',
+    date: '2026-09-12',
+    location: 'En ligne + session live',
+    seats: 20,
+    seatsLeft: 14,
+    duration: '4 h live',
+    equipment: [],
+    level: 'avance',
+    price: '320 € HT',
+    imageGradient: 'from-orange-500 to-amber-700',
+  },
+]
