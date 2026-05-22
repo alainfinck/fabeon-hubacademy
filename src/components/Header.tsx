@@ -4,10 +4,11 @@ import { Menu, X, GraduationCap } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 
 const nav = [
+  { to: '/#formation-en-ligne', label: 'En ligne' },
+  { to: '/#ateliers-physiques', label: 'Ateliers' },
+  { to: '/#abonnement', label: 'Abonnement' },
   { to: '/cours', label: 'Catalogue' },
-  { to: '/ateliers', label: 'Ateliers' },
   { to: '/mon-espace', label: 'Mon espace' },
-  { to: '/a-propos', label: 'À propos' },
 ]
 
 export function Header() {

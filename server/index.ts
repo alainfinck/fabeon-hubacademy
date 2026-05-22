@@ -200,6 +200,42 @@ app.post('/api/progress/lessons/complete', (req, res) => {
   res.json(loadProgress(learnerId))
 })
 
+app.post('/api/enterprise-projects', (req, res) => {
+  const { company, contactName, email, phone, projectType, description, deadline } =
+    req.body as {
+      company?: string
+      contactName?: string
+      email?: string
+      phone?: string
+      projectType?: string
+      description?: string
+      deadline?: string
+    }
+
+  if (!company?.trim() || !contactName?.trim() || !email?.trim() || !projectType || !description?.trim()) {
+    res.status(400).json({ error: 'Champs obligatoires manquants' })
+    return
+  }
+
+  const result = getDb()
+    .prepare(
+      `INSERT INTO enterprise_projects
+       (company, contact_name, email, phone, project_type, description, deadline)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(
+      company.trim(),
+      contactName.trim(),
+      email.trim(),
+      phone?.trim() || null,
+      projectType,
+      description.trim(),
+      deadline || null
+    )
+
+  res.status(201).json({ id: result.lastInsertRowid, ok: true })
+})
+
 app.patch('/api/progress/last-visited', (req, res) => {
   const learnerId = getLearnerId(req)
   const { courseId, lessonId } = req.body as {

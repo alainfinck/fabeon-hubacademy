@@ -125,6 +125,19 @@ function initSchema(database: Database.Database) {
       last_lesson_id TEXT,
       FOREIGN KEY (learner_id) REFERENCES learners(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS enterprise_projects (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      company TEXT NOT NULL,
+      contact_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      project_type TEXT NOT NULL,
+      description TEXT NOT NULL,
+      deadline TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
   `)
 }
 

@@ -70,4 +70,18 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ courseId, lessonId }),
     }),
+
+  submitEnterpriseProject: (data: {
+    company: string
+    contactName: string
+    email: string
+    phone: string
+    projectType: string
+    description: string
+    deadline: string
+  }) =>
+    request<{ id: number; ok: boolean }>('/enterprise-projects', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 }

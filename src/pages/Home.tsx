@@ -2,15 +2,17 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight,
   Award,
-  Users,
   Wrench,
   Play,
   CheckCircle2,
 } from 'lucide-react'
 import { useData } from '../context/DataContext'
-import { CourseCard } from '../components/CourseCard'
 import { CategoryIcon } from '../components/CategoryIcon'
 import { PageError, PageLoader } from '../components/PageLoader'
+import { HomeOnlineSection } from '../components/home/HomeOnlineSection'
+import { HomeWorkshopsSection } from '../components/home/HomeWorkshopsSection'
+import { HomeSubscriptionSection } from '../components/home/HomeSubscriptionSection'
+import { HomeEnterpriseSection } from '../components/home/HomeEnterpriseSection'
 
 const stats = [
   { value: '8+', label: 'Parcours certifiants' },
@@ -27,8 +29,7 @@ const features = [
 ]
 
 export function Home() {
-  const { courses, categories, loading, error, refresh } = useData()
-  const featured = courses.filter((c) => c.featured).slice(0, 4)
+  const { courses, categories, workshops, loading, error, refresh } = useData()
 
   if (loading) return <PageLoader />
   if (error) return <PageError message={error} onRetry={refresh} />
@@ -58,20 +59,20 @@ export function Home() {
                 de prototypage — tout ce dont votre atelier a besoin, en un seul endroit.
               </p>
               <div className="flex flex-wrap gap-4 mt-8">
-                <Link
-                  to="/cours"
+                <a
+                  href="#formation-en-ligne"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
                 >
-                  Explorer les cours
+                  Formation en ligne
                   <ArrowRight className="w-5 h-5" />
-                </Link>
-                <Link
-                  to="/ateliers"
+                </a>
+                <a
+                  href="#ateliers-physiques"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-theme hover:border-brand-500/50 text-body font-semibold transition-colors bg-surface"
                 >
                   <Wrench className="w-5 h-5" />
-                  Ateliers pratiques
-                </Link>
+                  Ateliers physiques
+                </a>
               </div>
               <ul className="mt-8 space-y-2">
                 {features.map((f) => (
@@ -134,6 +135,10 @@ export function Home() {
         </div>
       </section>
 
+      <HomeOnlineSection courses={courses} />
+
+      <HomeWorkshopsSection workshops={workshops} />
+
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <h2 className="font-display text-2xl sm:text-3xl font-bold text-heading text-center mb-4">
           Domaines de formation
@@ -162,39 +167,18 @@ export function Home() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10">
-          <div>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-heading">
-              Cours populaires
-            </h2>
-            <p className="text-muted mt-2">Les formations les plus suivies par nos apprenants</p>
-          </div>
-          <Link
-            to="/cours"
-            className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-500 dark:text-brand-400 dark:hover:text-brand-300 font-medium text-sm"
-          >
-            Voir tout le catalogue
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featured.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
-        </div>
-      </section>
+      <HomeSubscriptionSection />
+
+      <HomeEnterpriseSection />
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
         <div className="rounded-3xl hero-card border p-8 sm:p-12 flex flex-col lg:flex-row items-center gap-8">
           <div className="flex-1">
-            <Users className="w-10 h-10 text-brand-600 dark:text-brand-400 mb-4" />
             <h2 className="font-display text-2xl font-bold text-heading">
-              Formez toute votre équipe atelier
+              Une question sur votre atelier ?
             </h2>
             <p className="text-muted mt-3 leading-relaxed">
-              Accès multi-utilisateurs, suivi des progressions et parcours sur-mesure pour vos
-              opérateurs impression, découpe et prépresse.
+              Abonnement, atelier physique ou dépôt de projet — notre équipe vous répond rapidement.
             </p>
           </div>
           <Link
