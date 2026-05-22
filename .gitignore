@@ -14,11 +14,14 @@ server/data/*.db-*
 dist-ssr
 *.local
 
+# macOS
+._*
+.DS_Store
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
