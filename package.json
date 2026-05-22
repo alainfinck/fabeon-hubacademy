@@ -15,7 +15,9 @@
     "db:seed": "tsx server/seed.ts",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start:api": "tsx server/index.ts"
+    "start:api": "tsx server/index.ts",
+    "deploy": "bash deploy.sh",
+    "deploy:preview": "bash deploy.sh --preview"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",
@@ -45,6 +47,7 @@
     "tailwindcss": "^4.3.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
+    "vercel": "^50.1.3",
     "vite": "^8.0.12"
   }
 }

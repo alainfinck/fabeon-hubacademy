@@ -33,10 +33,21 @@ La base est créée et peuplée automatiquement au premier démarrage de l'API.
 ### Commandes utiles
 
 ```bash
-npm run dev:api    # API seule
-npm run dev:web    # Frontend seul
-npm run db:seed    # Re-seed manuel (si base vide)
-npm run start:api  # API production
+npm run dev:api       # API seule
+npm run dev:web       # Frontend seul
+npm run db:seed       # Re-seed manuel (si base vide)
+npm run start:api     # API production
+./deploy.sh           # Déploiement manuel Vercel (production)
+./deploy.sh --preview # Déploiement preview
+npm run deploy        # idem ./deploy.sh
+```
+
+**Déploiement Vercel manuel** (première fois) :
+
+```bash
+npx vercel login
+npx vercel link
+./deploy.sh
 ```
 
 ## API (extrait)
