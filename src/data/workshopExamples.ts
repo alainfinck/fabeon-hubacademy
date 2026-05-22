@@ -63,4 +63,22 @@ export const workshopExamples: WorkshopExample[] = [
     skills: ['Carton', 'Kiss-cut', 'Prototypage'],
     imageGradient: 'from-fuchsia-500 to-pink-700',
   },
+  {
+    id: 'ex7',
+    title: 'Moodboard IA → PLV retail',
+    category: 'IA & création assistée',
+    description:
+      '3 concepts Midjourney, retouche Firefly et prototype Dibond découpé Zünd — livré en une journée de lab IA.',
+    skills: ['Midjourney', 'Firefly', 'PLV'],
+    imageGradient: 'from-fuchsia-500 to-violet-700',
+  },
+  {
+    id: 'ex8',
+    title: 'Upscale client basse résolution',
+    category: 'IA & création assistée',
+    description:
+      'Visuel photo 72 dpi agrandi en 3 m × 1,5 m sans artefacts — chaîne Topaz + contrôle Delta E avant Latex.',
+    skills: ['Upscale IA', 'Topaz', 'Qualité'],
+    imageGradient: 'from-violet-500 to-indigo-700',
+  },
 ]

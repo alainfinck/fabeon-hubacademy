@@ -1,13 +1,27 @@
-import type { Category, Course, UserProgress, Workshop } from '../types'
+import type {
+  AuthSession,
+  AuthUser,
+  Category,
+  Course,
+  EnterpriseProject,
+  EnterpriseProjectDetail,
+  EnterpriseProjectStatus,
+  HubEvent,
+  EventType,
+  UserProgress,
+  Workshop,
+} from '../types'
 
 const API_BASE = '/api'
 
 const LEARNER_KEY = 'fabeon-learner-id'
+const AUTH_TOKEN_KEY = 'fabeon-auth-token'
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
       ...getLearnerHeaders(),
       ...init?.headers,
     },
@@ -24,9 +38,28 @@ export function getLearnerId(): string | null {
   return localStorage.getItem(LEARNER_KEY)
 }
 
+export function getAuthToken(): string | null {
+  return localStorage.getItem(AUTH_TOKEN_KEY)
+}
+
 function getLearnerHeaders(): Record<string, string> {
   const id = getLearnerId()
   return id ? { 'x-learner-id': id } : {}
+}
+
+function getAuthHeaders(): Record<string, string> {
+  const token = getAuthToken()
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+export function setAuthSession(token: string, learnerId: string) {
+  localStorage.setItem(AUTH_TOKEN_KEY, token)
+  localStorage.setItem(LEARNER_KEY, learnerId)
+}
+
+export function clearAuth() {
+  localStorage.removeItem(AUTH_TOKEN_KEY)
+  localStorage.removeItem(LEARNER_KEY)
 }
 
 export async function ensureLearnerId(): Promise<string> {
@@ -47,6 +80,29 @@ export const api = {
   getCourseBySlug: (slug: string) => request<Course>(`/courses/${slug}`),
 
   getWorkshops: () => request<Workshop[]>('/workshops'),
+
+  getEvents: (type?: EventType) =>
+    request<HubEvent[]>(type ? `/events?type=${type}` : '/events'),
+
+  getEventBySlug: (slug: string) => request<HubEvent>(`/events/${slug}`),
+
+  register: (name: string, email: string, password: string) =>
+    request<AuthSession>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name, email, password }),
+    }),
+
+  login: (email: string, password: string) =>
+    request<AuthSession>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+
+  getMe: () =>
+    request<{ user: AuthUser; learnerId: string }>('/auth/me'),
+
+  logout: () =>
+    request<{ ok: boolean }>('/auth/logout', { method: 'POST' }),
 
   getProgress: () => request<UserProgress>('/progress'),
 
@@ -70,6 +126,14 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ courseId, lessonId }),
     }),
+
+  getEnterpriseProjects: (status?: EnterpriseProjectStatus) =>
+    request<EnterpriseProject[]>(
+      status ? `/enterprise-projects?status=${status}` : '/enterprise-projects'
+    ),
+
+  getEnterpriseProject: (id: string | number) =>
+    request<EnterpriseProjectDetail>(`/enterprise-projects/${id}`),
 
   submitEnterpriseProject: (data: {
     company: string

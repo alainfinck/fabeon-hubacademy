@@ -4,11 +4,28 @@ import { randomUUID } from 'crypto'
 import { getDb } from './db.js'
 import { seedDatabase } from './seed.js'
 import { migrateContactInfo } from './migrate.js'
-import { buildModules, mapCourseRow, mapWorkshopRow } from './mappers.js'
-import type { UserProgress } from '../src/types/index.js'
+import { migrateAuthTables } from './migrateAuth.js'
+import { seedEnterpriseProjects } from './seedEnterpriseProjects.js'
+import {
+  mapEnterpriseProject,
+  mapEnterpriseProjectDetail,
+} from './enterpriseProjects.js'
+import { buildModules, mapCourseRow, mapEventRow, mapWorkshopRow } from './mappers.js'
+import { seedEvents } from './seedEvents.js'
+import { migrateCoursePrices } from './migrateCoursePrices.js'
+import { migrateIaContent } from './migrateIaContent.js'
+import { createSessionToken, hashPassword, verifyPassword } from './auth.js'
+import type { AuthUser, UserProgress } from '../src/types/index.js'
 
 seedDatabase()
 migrateContactInfo()
+migrateAuthTables()
+seedEnterpriseProjects()
+seedEvents()
+migrateCoursePrices()
+migrateIaContent()
+
+const SESSION_DAYS = 30
 
 const app = express()
 app.use(cors())
@@ -26,6 +43,50 @@ function ensureLearner(learnerId: string) {
 function getLearnerId(req: express.Request): string | null {
   const id = req.header('x-learner-id')
   return typeof id === 'string' && id.length > 0 ? id : null
+}
+
+function getBearerToken(req: express.Request): string | null {
+  const auth = req.header('authorization')
+  if (!auth?.startsWith('Bearer ')) return null
+  const token = auth.slice(7).trim()
+  return token.length > 0 ? token : null
+}
+
+function sessionExpiry(): string {
+  const d = new Date()
+  d.setDate(d.getDate() + SESSION_DAYS)
+  return d.toISOString()
+}
+
+function createSession(userId: string): string {
+  const db = getDb()
+  const token = createSessionToken()
+  db.prepare(
+    'INSERT INTO sessions (token, user_id, expires_at) VALUES (?, ?, ?)'
+  ).run(token, userId, sessionExpiry())
+  return token
+}
+
+function getUserFromToken(token: string): (AuthUser & { learnerId: string }) | null {
+  const db = getDb()
+  const row = db
+    .prepare(
+      `SELECT u.id, u.email, u.name, u.learner_id AS learnerId
+       FROM sessions s
+       JOIN users u ON u.id = s.user_id
+       WHERE s.token = ? AND s.expires_at > datetime('now')`
+    )
+    .get(token) as { id: string; email: string; name: string; learnerId: string } | undefined
+  if (!row) return null
+  return { id: row.id, email: row.email, name: row.name, learnerId: row.learnerId }
+}
+
+function mapAuthResponse(user: AuthUser & { learnerId: string }, token: string) {
+  return {
+    user: { id: user.id, email: user.email, name: user.name },
+    token,
+    learnerId: user.learnerId,
+  }
 }
 
 function loadProgress(learnerId: string): UserProgress {
@@ -118,6 +179,36 @@ app.get('/api/courses/:slug', (req, res) => {
   res.json(mapCourseRow(row as Parameters<typeof mapCourseRow>[0], modules))
 })
 
+app.get('/api/events', (req, res) => {
+  const type = req.query.type as string | undefined
+  const db = getDb()
+  let rows: Parameters<typeof mapEventRow>[0][]
+
+  if (type && type !== 'all') {
+    rows = db
+      .prepare('SELECT * FROM events WHERE type = ? ORDER BY date ASC')
+      .all(type) as Parameters<typeof mapEventRow>[0][]
+  } else {
+    rows = db
+      .prepare('SELECT * FROM events ORDER BY date ASC')
+      .all() as Parameters<typeof mapEventRow>[0][]
+  }
+
+  res.json(rows.map(mapEventRow))
+})
+
+app.get('/api/events/:slug', (req, res) => {
+  const row = getDb()
+    .prepare('SELECT * FROM events WHERE slug = ?')
+    .get(req.params.slug) as Parameters<typeof mapEventRow>[0] | undefined
+
+  if (!row) {
+    res.status(404).json({ error: 'Événement introuvable' })
+    return
+  }
+  res.json(mapEventRow(row))
+})
+
 app.get('/api/workshops', (_req, res) => {
   const rows = getDb()
     .prepare('SELECT * FROM workshops ORDER BY sort_order')
@@ -129,6 +220,112 @@ app.post('/api/learners', (_req, res) => {
   const id = randomUUID()
   ensureLearner(id)
   res.status(201).json({ id })
+})
+
+app.post('/api/auth/register', (req, res) => {
+  const { email, password, name } = req.body as {
+    email?: string
+    password?: string
+    name?: string
+  }
+
+  const trimmedEmail = email?.trim().toLowerCase()
+  const trimmedName = name?.trim()
+
+  if (!trimmedEmail || !password || !trimmedName) {
+    res.status(400).json({ error: 'Nom, e-mail et mot de passe requis' })
+    return
+  }
+  if (password.length < 8) {
+    res.status(400).json({ error: 'Le mot de passe doit contenir au moins 8 caractères' })
+    return
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+    res.status(400).json({ error: 'Adresse e-mail invalide' })
+    return
+  }
+
+  const db = getDb()
+  const existing = db
+    .prepare('SELECT id FROM users WHERE email = ? COLLATE NOCASE')
+    .get(trimmedEmail)
+  if (existing) {
+    res.status(409).json({ error: 'Un compte existe déjà avec cet e-mail' })
+    return
+  }
+
+  const userId = randomUUID()
+  const learnerId = randomUUID()
+  ensureLearner(learnerId)
+
+  db.prepare(
+    `INSERT INTO users (id, email, password_hash, name, learner_id)
+     VALUES (?, ?, ?, ?, ?)`
+  ).run(userId, trimmedEmail, hashPassword(password), trimmedName, learnerId)
+
+  const user = { id: userId, email: trimmedEmail, name: trimmedName, learnerId }
+  const token = createSession(userId)
+  res.status(201).json(mapAuthResponse(user, token))
+})
+
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body as { email?: string; password?: string }
+  const trimmedEmail = email?.trim().toLowerCase()
+
+  if (!trimmedEmail || !password) {
+    res.status(400).json({ error: 'E-mail et mot de passe requis' })
+    return
+  }
+
+  const row = getDb()
+    .prepare(
+      'SELECT id, email, name, password_hash, learner_id AS learnerId FROM users WHERE email = ? COLLATE NOCASE'
+    )
+    .get(trimmedEmail) as
+    | {
+        id: string
+        email: string
+        name: string
+        password_hash: string
+        learnerId: string
+      }
+    | undefined
+
+  if (!row || !verifyPassword(password, row.password_hash)) {
+    res.status(401).json({ error: 'E-mail ou mot de passe incorrect' })
+    return
+  }
+
+  ensureLearner(row.learnerId)
+  const token = createSession(row.id)
+  res.json(
+    mapAuthResponse(
+      { id: row.id, email: row.email, name: row.name, learnerId: row.learnerId },
+      token
+    )
+  )
+})
+
+app.get('/api/auth/me', (req, res) => {
+  const token = getBearerToken(req)
+  if (!token) {
+    res.status(401).json({ error: 'Non connecté' })
+    return
+  }
+  const user = getUserFromToken(token)
+  if (!user) {
+    res.status(401).json({ error: 'Session expirée' })
+    return
+  }
+  res.json({ user: { id: user.id, email: user.email, name: user.name }, learnerId: user.learnerId })
+})
+
+app.post('/api/auth/logout', (req, res) => {
+  const token = getBearerToken(req)
+  if (token) {
+    getDb().prepare('DELETE FROM sessions WHERE token = ?').run(token)
+  }
+  res.json({ ok: true })
 })
 
 app.get('/api/progress', (req, res) => {
@@ -196,6 +393,45 @@ app.post('/api/progress/lessons/complete', (req, res) => {
     `UPDATE learner_meta SET last_course_id = ?, last_lesson_id = ? WHERE learner_id = ?`
   ).run(courseId, lessonId, learnerId)
   res.json(loadProgress(learnerId))
+})
+
+app.get('/api/enterprise-projects', (req, res) => {
+  const status = req.query.status as string | undefined
+  const db = getDb()
+  let rows: Parameters<typeof mapEnterpriseProject>[0][]
+
+  if (status && status !== 'all') {
+    rows = db
+      .prepare(
+        `SELECT id, company, contact_name, email, phone, project_type, description, deadline, status, created_at
+         FROM enterprise_projects WHERE status = ? ORDER BY created_at DESC`
+      )
+      .all(status) as Parameters<typeof mapEnterpriseProject>[0][]
+  } else {
+    rows = db
+      .prepare(
+        `SELECT id, company, contact_name, email, phone, project_type, description, deadline, status, created_at
+         FROM enterprise_projects ORDER BY created_at DESC`
+      )
+      .all() as Parameters<typeof mapEnterpriseProject>[0][]
+  }
+
+  res.json(rows.map(mapEnterpriseProject))
+})
+
+app.get('/api/enterprise-projects/:id', (req, res) => {
+  const row = getDb()
+    .prepare(
+      `SELECT id, company, contact_name, email, phone, project_type, description, deadline, status, created_at
+       FROM enterprise_projects WHERE id = ?`
+    )
+    .get(req.params.id) as Parameters<typeof mapEnterpriseProjectDetail>[0] | undefined
+
+  if (!row) {
+    res.status(404).json({ error: 'Projet introuvable' })
+    return
+  }
+  res.json(mapEnterpriseProjectDetail(row))
 })
 
 app.post('/api/enterprise-projects', (req, res) => {

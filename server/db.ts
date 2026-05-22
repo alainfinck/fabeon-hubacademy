@@ -48,6 +48,7 @@ function initSchema(database: Database.Database) {
       instructor_role TEXT NOT NULL,
       tags TEXT NOT NULL DEFAULT '[]',
       featured INTEGER NOT NULL DEFAULT 0,
+      price TEXT NOT NULL DEFAULT '',
       equipment TEXT,
       software TEXT,
       objectives TEXT NOT NULL DEFAULT '[]',
@@ -95,7 +96,8 @@ function initSchema(database: Database.Database) {
       level TEXT NOT NULL,
       price TEXT NOT NULL,
       image_gradient TEXT NOT NULL,
-      sort_order INTEGER NOT NULL DEFAULT 0
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      ia INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS learners (
@@ -127,6 +129,28 @@ function initSchema(database: Database.Database) {
       last_course_id TEXT,
       last_lesson_id TEXT,
       FOREIGN KEY (learner_id) REFERENCES learners(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS events (
+      id TEXT PRIMARY KEY,
+      slug TEXT UNIQUE NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      type TEXT NOT NULL,
+      format TEXT NOT NULL,
+      date TEXT NOT NULL,
+      end_date TEXT,
+      time_label TEXT,
+      location TEXT NOT NULL,
+      speakers TEXT NOT NULL DEFAULT '[]',
+      topics TEXT NOT NULL DEFAULT '[]',
+      seats INTEGER,
+      seats_left INTEGER,
+      price TEXT NOT NULL,
+      free INTEGER NOT NULL DEFAULT 0,
+      featured INTEGER NOT NULL DEFAULT 0,
+      image_gradient TEXT NOT NULL,
+      sort_order INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS enterprise_projects (

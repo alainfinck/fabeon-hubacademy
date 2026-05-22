@@ -1,5 +1,5 @@
 export type CourseLevel = 'debutant' | 'intermediaire' | 'avance' | 'expert'
-export type CourseFormat = 'en-ligne' | 'atelier' | 'hybride'
+export type CourseFormat = 'en-ligne' | 'atelier' | 'hybride' | 'atelier-ia'
 export type LessonType = 'video' | 'texte' | 'quiz' | 'pratique'
 
 export type CategoryId =
@@ -9,6 +9,7 @@ export type CategoryId =
   | 'logiciels'
   | 'ateliers'
   | 'communication'
+  | 'ia'
 
 export interface Category {
   id: CategoryId
@@ -49,11 +50,36 @@ export interface Course {
   instructorRole: string
   tags: string[]
   featured: boolean
+  price: string
   equipment?: string[]
   software?: string[]
   modules: Module[]
   objectives: string[]
   prerequisites: string[]
+  imageGradient: string
+}
+
+export type EventType = 'conference' | 'webinar' | 'salon' | 'masterclass' | 'meetup'
+export type EventFormat = 'presentiel' | 'en-ligne' | 'hybride'
+
+export interface HubEvent {
+  id: string
+  slug: string
+  title: string
+  description: string
+  type: EventType
+  format: EventFormat
+  date: string
+  endDate?: string
+  time?: string
+  location: string
+  speakers: string[]
+  topics: string[]
+  seats?: number
+  seatsLeft?: number
+  price: string
+  free: boolean
+  featured: boolean
   imageGradient: string
 }
 
@@ -71,6 +97,40 @@ export interface Workshop {
   level: CourseLevel
   price: string
   imageGradient: string
+  /** Ateliers dédiés intelligence artificielle */
+  ia?: boolean
+}
+
+export type EnterpriseProjectStatus =
+  | 'pending'
+  | 'assigned'
+  | 'in_progress'
+  | 'completed'
+
+export interface EnterpriseProject {
+  id: number
+  company: string
+  projectType: string
+  description: string
+  deadline: string | null
+  status: EnterpriseProjectStatus
+  createdAt: string
+}
+
+export interface EnterpriseProjectDetail extends EnterpriseProject {
+  contactName: string
+}
+
+export interface AuthUser {
+  id: string
+  email: string
+  name: string
+}
+
+export interface AuthSession {
+  user: AuthUser
+  token: string
+  learnerId: string
 }
 
 export interface UserProgress {

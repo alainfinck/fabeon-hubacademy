@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BookOpen, Play, TrendingUp, Award } from 'lucide-react'
 import type { Course } from '../types'
+import { useAuth } from '../context/AuthContext'
 import { useData } from '../context/DataContext'
 import { useLearning } from '../context/LearningContext'
 import { CourseCard } from '../components/CourseCard'
@@ -10,6 +11,7 @@ import { PageError, PageLoader } from '../components/PageLoader'
 import { getLesson } from '../lib/courseUtils'
 
 export function Dashboard() {
+  const { user } = useAuth()
   const { courses, loading: dataLoading, error, refresh, getCourse } = useData()
   const { progress, getCourseProgress, isEnrolled, loading: progressLoading } =
     useLearning()
@@ -49,8 +51,23 @@ export function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="font-display text-3xl font-bold text-heading">Mon espace</h1>
+      <h1 className="font-display text-3xl font-bold text-heading">
+        {user ? `Bonjour, ${user.name.split(' ')[0]}` : 'Mon espace'}
+      </h1>
       <p className="text-muted mt-2">Suivez votre progression et reprenez vos formations.</p>
+
+      {!user && (
+        <p className="mt-4 text-sm text-muted card-base border rounded-xl px-4 py-3">
+          <Link to="/inscription" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">
+            Créez un compte
+          </Link>{' '}
+          ou{' '}
+          <Link to="/connexion" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">
+            connectez-vous
+          </Link>{' '}
+          pour sauvegarder votre progression sur tous vos appareils.
+        </p>
+      )}
 
       <div className="grid sm:grid-cols-3 gap-4 mt-8">
         <div className="p-5 rounded-2xl card-base">

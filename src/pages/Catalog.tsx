@@ -1,14 +1,10 @@
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, SlidersHorizontal } from 'lucide-react'
-import { levelLabels, formatLabels } from '../data/categories'
 import { useData } from '../context/DataContext'
 import { CourseCard } from '../components/CourseCard'
 import { PageError, PageLoader } from '../components/PageLoader'
-import type { CategoryId, CourseLevel, CourseFormat } from '../types'
-
-const filterActive = 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
-const filterIdle = 'text-muted hover:text-heading'
+import { CourseFiltersPanel } from '../components/courses/CourseFiltersPanel'
+import type { CategoryId, CourseFormat, CourseLevel } from '../types'
 
 export function Catalog() {
   const { courses, categories, loading, error, refresh } = useData()
@@ -37,7 +33,7 @@ export function Catalog() {
         c.instructor.toLowerCase().includes(q)
       )
     })
-  }, [search, category, level, format])
+  }, [courses, search, category, level, format])
 
   const setCategoryFilter = (id: CategoryId | 'all') => {
     setCategory(id)
@@ -65,84 +61,22 @@ export function Catalog() {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="lg:w-64 shrink-0 space-y-6">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-faint" />
-            <input
-              type="search"
-              placeholder="Rechercher…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-input border border-theme text-heading placeholder:text-faint focus:outline-none focus:border-brand-500/50 text-sm"
-            />
-          </div>
-
-          <div className="p-5 rounded-2xl card-base space-y-5">
-            <div className="flex items-center gap-2 text-sm font-medium text-body">
-              <SlidersHorizontal className="w-4 h-4" />
-              Filtres
-            </div>
-
-            <div>
-              <label className="text-xs text-faint uppercase tracking-wide">Catégorie</label>
-              <div className="mt-2 space-y-1">
-                <button
-                  type="button"
-                  onClick={() => setCategoryFilter('all')}
-                  className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                    category === 'all' ? filterActive : filterIdle
-                  }`}
-                >
-                  Toutes
-                </button>
-                {categories.map((cat) => (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setCategoryFilter(cat.id)}
-                    className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                      category === cat.id ? filterActive : filterIdle
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="text-xs text-faint uppercase tracking-wide">Niveau</label>
-              <select
-                value={level}
-                onChange={(e) => setLevel(e.target.value as CourseLevel | 'all')}
-                className="mt-2 w-full px-3 py-2 rounded-lg bg-input border border-theme text-sm text-body focus:outline-none focus:border-brand-500/50"
-              >
-                <option value="all">Tous niveaux</option>
-                {Object.entries(levelLabels).map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="text-xs text-faint uppercase tracking-wide">Format</label>
-              <select
-                value={format}
-                onChange={(e) => setFormat(e.target.value as CourseFormat | 'all')}
-                className="mt-2 w-full px-3 py-2 rounded-lg bg-input border border-theme text-sm text-body focus:outline-none focus:border-brand-500/50"
-              >
-                <option value="all">Tous formats</option>
-                {Object.entries(formatLabels).map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </aside>
+        <CourseFiltersPanel
+          categories={categories}
+          search={search}
+          onSearchChange={setSearch}
+          category={category}
+          onCategoryChange={setCategoryFilter}
+          level={level}
+          onLevelChange={setLevel}
+          format={format}
+          onFormatChange={setFormat}
+        />
 
         <div className="flex-1">
           <p className="text-sm text-faint mb-6">
-            {filtered.length} cours{filtered.length !== 1 ? 's' : ''} trouvé{filtered.length !== 1 ? 's' : ''}
+            {filtered.length} cours{filtered.length !== 1 ? 's' : ''} trouvé
+            {filtered.length !== 1 ? 's' : ''}
           </p>
           {filtered.length === 0 ? (
             <div className="text-center py-16 rounded-2xl card-base">

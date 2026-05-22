@@ -6,13 +6,20 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import type { Category, Course, Workshop } from '../types'
+import type { Category, Course, HubEvent, Workshop } from '../types'
 import { api } from '../api/client'
+import {
+  staticCategories,
+  staticCourses,
+  staticEvents,
+  staticWorkshops,
+} from '../data/staticCatalog'
 
 interface DataContextValue {
   categories: Category[]
   courses: Course[]
   workshops: Workshop[]
+  events: HubEvent[]
   loading: boolean
   error: string | null
   getCourse: (slug: string) => Promise<Course | null>
@@ -27,6 +34,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([])
   const [courses, setCourses] = useState<Course[]>([])
   const [workshops, setWorkshops] = useState<Workshop[]>([])
+  const [events, setEvents] = useState<HubEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -34,17 +42,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setLoading(true)
     setError(null)
     try {
-      const [cats, crs, wrk] = await Promise.all([
+      const [cats, crs, wrk, evts] = await Promise.all([
         api.getCategories(),
         api.getCourses(),
         api.getWorkshops(),
+        api.getEvents(),
       ])
-      setCategories(cats)
-      setCourses(crs)
-      setWorkshops(wrk)
+      setCategories(cats.length > 0 ? cats : staticCategories)
+      setCourses(crs.length > 0 ? crs : staticCourses)
+      setWorkshops(wrk.length > 0 ? wrk : staticWorkshops)
+      setEvents(evts.length > 0 ? evts : staticEvents)
       courseCache.clear()
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erreur de chargement')
+    } catch {
+      setCategories(staticCategories)
+      setCourses(staticCourses)
+      setWorkshops(staticWorkshops)
+      setEvents(staticEvents)
+      setError(null)
     } finally {
       setLoading(false)
     }
@@ -70,12 +84,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
       categories,
       courses,
       workshops,
+      events,
       loading,
       error,
       getCourse,
       refresh: load,
     }),
-    [categories, courses, workshops, loading, error]
+    [categories, courses, workshops, events, loading, error]
   )
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>

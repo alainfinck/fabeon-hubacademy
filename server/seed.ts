@@ -2,11 +2,20 @@ import { getDb } from './db.js'
 import { categories } from '../src/data/categories.js'
 import { courses } from '../src/data/courses.js'
 import { workshops } from '../src/data/workshops.js'
+import { events } from '../src/data/events.js'
 
 export function seedDatabase() {
   const db = getDb()
   const count = db.prepare('SELECT COUNT(*) as n FROM categories').get() as { n: number }
-  if (count.n > 0) return false
+  if (count.n >= categories.length) return false
+  if (count.n > 0) {
+    db.exec('DELETE FROM lessons')
+    db.exec('DELETE FROM modules')
+    db.exec('DELETE FROM courses')
+    db.exec('DELETE FROM workshops')
+    db.exec('DELETE FROM events')
+    db.exec('DELETE FROM categories')
+  }
 
   const insertCategory = db.prepare(`
     INSERT INTO categories (id, label, description, icon, color)
@@ -16,11 +25,11 @@ export function seedDatabase() {
   const insertCourse = db.prepare(`
     INSERT INTO courses (
       id, slug, title, subtitle, description, category, level, format,
-      duration, lessons_count, instructor, instructor_role, tags, featured,
+      duration, lessons_count, instructor, instructor_role, tags, featured, price,
       equipment, software, objectives, prerequisites, image_gradient, sort_order
     ) VALUES (
       @id, @slug, @title, @subtitle, @description, @category, @level, @format,
-      @duration, @lessons_count, @instructor, @instructor_role, @tags, @featured,
+      @duration, @lessons_count, @instructor, @instructor_role, @tags, @featured, @price,
       @equipment, @software, @objectives, @prerequisites, @image_gradient, @sort_order
     )
   `)
@@ -38,13 +47,23 @@ export function seedDatabase() {
     )
   `)
 
+  const insertEvent = db.prepare(`
+    INSERT INTO events (
+      id, slug, title, description, type, format, date, end_date, time_label,
+      location, speakers, topics, seats, seats_left, price, free, featured, image_gradient, sort_order
+    ) VALUES (
+      @id, @slug, @title, @description, @type, @format, @date, @end_date, @time_label,
+      @location, @speakers, @topics, @seats, @seats_left, @price, @free, @featured, @image_gradient, @sort_order
+    )
+  `)
+
   const insertWorkshop = db.prepare(`
     INSERT INTO workshops (
       id, slug, title, description, date, location, seats, seats_left,
-      duration, equipment, level, price, image_gradient, sort_order
+      duration, equipment, level, price, image_gradient, sort_order, ia
     ) VALUES (
       @id, @slug, @title, @description, @date, @location, @seats, @seats_left,
-      @duration, @equipment, @level, @price, @image_gradient, @sort_order
+      @duration, @equipment, @level, @price, @image_gradient, @sort_order, @ia
     )
   `)
 
@@ -67,6 +86,7 @@ export function seedDatabase() {
         instructor_role: course.instructorRole,
         tags: JSON.stringify(course.tags),
         featured: course.featured ? 1 : 0,
+        price: course.price,
         equipment: course.equipment ? JSON.stringify(course.equipment) : null,
         software: course.software ? JSON.stringify(course.software) : null,
         objectives: JSON.stringify(course.objectives),
@@ -99,6 +119,30 @@ export function seedDatabase() {
       })
     })
 
+    events.forEach((e, i) => {
+      insertEvent.run({
+        id: e.id,
+        slug: e.slug,
+        title: e.title,
+        description: e.description,
+        type: e.type,
+        format: e.format,
+        date: e.date,
+        end_date: e.endDate ?? null,
+        time_label: e.time ?? null,
+        location: e.location,
+        speakers: JSON.stringify(e.speakers),
+        topics: JSON.stringify(e.topics),
+        seats: e.seats ?? null,
+        seats_left: e.seatsLeft ?? null,
+        price: e.price,
+        free: e.free ? 1 : 0,
+        featured: e.featured ? 1 : 0,
+        image_gradient: e.imageGradient,
+        sort_order: i,
+      })
+    })
+
     workshops.forEach((w, i) => {
       insertWorkshop.run({
         id: w.id,
@@ -115,6 +159,7 @@ export function seedDatabase() {
         price: w.price,
         image_gradient: w.imageGradient,
         sort_order: i,
+        ia: w.ia ? 1 : 0,
       })
     })
   })

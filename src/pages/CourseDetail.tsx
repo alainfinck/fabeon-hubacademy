@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Monitor,
   Wrench,
+  Tag,
 } from 'lucide-react'
 import { levelLabels, formatLabels } from '../data/categories'
 import { CategoryBadge } from '../components/CategoryBadge'
@@ -62,6 +63,12 @@ export function CourseDetail() {
             </span>
             <span>{levelLabels[course.level]}</span>
             <span>{formatLabels[course.format]}</span>
+            {course.price && (
+              <span className="flex items-center gap-1.5 text-xl sm:text-2xl font-bold text-white">
+                <Tag className="w-5 h-5 sm:w-6 sm:h-6" />
+                {course.price}
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -145,6 +152,16 @@ export function CourseDetail() {
 
           <aside className="space-y-6">
             <div className="sticky top-24 rounded-2xl card-base p-6 space-y-5">
+              {course.price && (
+                <div className="text-center py-2 pb-4 border-b border-theme">
+                  <span className="text-xs text-muted uppercase tracking-wide">Tarif</span>
+                  <p className="mt-1 flex items-center justify-center gap-2 font-display text-3xl font-bold text-accent-600 dark:text-accent-400">
+                    <Tag className="w-6 h-6 shrink-0" />
+                    {course.price}
+                  </p>
+                </div>
+              )}
+
               {enrolled && <ProgressBar value={progress} label="Votre progression" />}
 
               {enrolled ? (

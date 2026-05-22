@@ -1,4 +1,4 @@
-import type { Course, Lesson, Module, Workshop } from '../src/types/index.js'
+import type { Course, HubEvent, Lesson, Module, Workshop } from '../src/types/index.js'
 import { jsonParse } from './db.js'
 
 interface CourseRow {
@@ -16,6 +16,7 @@ interface CourseRow {
   instructor_role: string
   tags: string
   featured: number
+  price: string
   equipment: string | null
   software: string | null
   objectives: string
@@ -59,6 +60,7 @@ export function mapCourseRow(row: CourseRow, modules: Module[] = []): Course {
     instructorRole: row.instructor_role,
     tags: jsonParse<string[]>(row.tags, []),
     featured: row.featured === 1,
+    price: row.price || '',
     equipment: row.equipment ? jsonParse<string[]>(row.equipment, []) : undefined,
     software: row.software ? jsonParse<string[]>(row.software, []) : undefined,
     objectives: jsonParse<string[]>(row.objectives, []),
@@ -94,6 +96,49 @@ function mapLessonRow(row: LessonRow): Lesson {
   }
 }
 
+export function mapEventRow(row: {
+  id: string
+  slug: string
+  title: string
+  description: string
+  type: string
+  format: string
+  date: string
+  end_date: string | null
+  time_label: string | null
+  location: string
+  speakers: string
+  topics: string
+  seats: number | null
+  seats_left: number | null
+  price: string
+  free: number
+  featured: number
+  image_gradient: string
+}): HubEvent {
+  const event: HubEvent = {
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    description: row.description,
+    type: row.type as HubEvent['type'],
+    format: row.format as HubEvent['format'],
+    date: row.date,
+    location: row.location,
+    speakers: jsonParse<string[]>(row.speakers, []),
+    topics: jsonParse<string[]>(row.topics, []),
+    price: row.price,
+    free: row.free === 1,
+    featured: row.featured === 1,
+    imageGradient: row.image_gradient,
+  }
+  if (row.end_date) event.endDate = row.end_date
+  if (row.time_label) event.time = row.time_label
+  if (row.seats != null) event.seats = row.seats
+  if (row.seats_left != null) event.seatsLeft = row.seats_left
+  return event
+}
+
 export function mapWorkshopRow(row: {
   id: string
   slug: string
@@ -108,8 +153,9 @@ export function mapWorkshopRow(row: {
   level: string
   price: string
   image_gradient: string
+  ia?: number
 }): Workshop {
-  return {
+  const workshop: Workshop = {
     id: row.id,
     slug: row.slug,
     title: row.title,
@@ -124,4 +170,6 @@ export function mapWorkshopRow(row: {
     price: row.price,
     imageGradient: row.image_gradient,
   }
+  if (row.ia === 1) workshop.ia = true
+  return workshop
 }

@@ -9,6 +9,7 @@ import {
 } from 'react'
 import type { UserProgress } from '../types'
 import { api, ensureLearnerId } from '../api/client'
+import { useAuth } from './AuthContext'
 import { useData } from './DataContext'
 
 const emptyProgress: UserProgress = {
@@ -32,13 +33,15 @@ const LearningContext = createContext<LearningContextValue | null>(null)
 
 export function LearningProvider({ children }: { children: ReactNode }) {
   const { courses } = useData()
+  const { user, ready: authReady } = useAuth()
   const [progress, setProgress] = useState<UserProgress>(emptyProgress)
   const [loading, setLoading] = useState(true)
   const [lessonTotals, setLessonTotals] = useState<Record<string, number>>({})
 
   const loadProgress = useCallback(async () => {
+    setLoading(true)
     try {
-      await ensureLearnerId()
+      if (!user) await ensureLearnerId()
       const p = await api.getProgress()
       setProgress(p)
     } catch {
@@ -46,11 +49,12 @@ export function LearningProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
+    if (!authReady) return
     loadProgress()
-  }, [loadProgress])
+  }, [authReady, user?.id, loadProgress])
 
   useEffect(() => {
     const totals: Record<string, number> = {}

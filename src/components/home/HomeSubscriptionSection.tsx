@@ -3,22 +3,24 @@ import { CheckCircle2, Infinity, Building2 } from 'lucide-react'
 import { subscriptionPlans } from '../../data/subscriptions'
 import { CONTACT } from '../../data/contact'
 
-export function HomeSubscriptionSection() {
+interface Props {
+  embedded?: boolean
+}
+
+export function HomeSubscriptionSection({ embedded = false }: Props) {
   return (
-    <section id="abonnement" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 scroll-mt-20">
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <div className="inline-flex items-center gap-2 text-sm font-medium text-brand-600 dark:text-brand-400 mb-3">
-          <Infinity className="w-4 h-4" />
-          Abonnement entreprise
+    <section className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${embedded ? 'py-10' : 'py-20'}`}>
+      {!embedded && (
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 text-sm font-medium text-brand-600 dark:text-brand-400 mb-3">
+            <Infinity className="w-4 h-4" />
+            Abonnement entreprise
+          </div>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-heading">
+            Accès illimité aux cours en ligne
+          </h2>
         </div>
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-heading">
-          Accès illimité aux cours en ligne
-        </h2>
-        <p className="text-muted mt-3 leading-relaxed">
-          Formez toute votre équipe d'impression, découpe et prépresse sans limite de modules.
-          Facturation mensuelle, résiliable à tout moment.
-        </p>
-      </div>
+      )}
 
       <div className="grid md:grid-cols-3 gap-6">
         {subscriptionPlans.map((plan) => (
@@ -69,12 +71,14 @@ export function HomeSubscriptionSection() {
         ))}
       </div>
 
-      <p className="text-center text-sm text-muted mt-8">
-        Besoin d'une offre sur-mesure ?{' '}
-        <Link to="/a-propos" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">
-          Contactez-nous
-        </Link>
-      </p>
+      {!embedded && (
+        <p className="text-center text-sm text-muted mt-8">
+          Besoin d'une offre sur-mesure ?{' '}
+          <Link to="/a-propos" className="text-brand-600 dark:text-brand-400 font-medium hover:underline">
+            Contactez-nous
+          </Link>
+        </p>
+      )}
     </section>
   )
 }

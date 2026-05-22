@@ -43,6 +43,14 @@ export const categories: Category[] = [
     icon: 'Layers',
     color: 'from-indigo-500 to-blue-600',
   },
+  {
+    id: 'ia',
+    label: 'IA & création assistée',
+    description:
+      'Visuels génératifs, prompting, automatisation de fichiers et workflows IA pour l\'impression.',
+    icon: 'Sparkles',
+    color: 'from-fuchsia-500 to-violet-600',
+  },
 ]
 
 export const levelLabels: Record<string, string> = {
@@ -56,4 +64,5 @@ export const formatLabels: Record<string, string> = {
   'en-ligne': 'En ligne',
   atelier: 'Atelier présentiel',
   hybride: 'Hybride',
+  'atelier-ia': 'Atelier IA',
 }

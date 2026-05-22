@@ -46,9 +46,11 @@ npm run deploy        # idem ./deploy.sh
 
 ```bash
 npx vercel login
-npx vercel link
 ./deploy.sh
 ```
+
+Le script utilise le projet `fabeon-hubacademy` (pas le nom du dossier avec espaces).
+Si le lien échoue, créez le projet sur Vercel puis relancez `./deploy.sh`.
 
 ## API (extrait)
 

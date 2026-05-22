@@ -5,6 +5,7 @@ import {
   Monitor,
   Hammer,
   Layers,
+  Sparkles,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -15,6 +16,7 @@ const icons: Record<string, LucideIcon> = {
   Monitor,
   Hammer,
   Layers,
+  Sparkles,
 }
 
 interface Props {

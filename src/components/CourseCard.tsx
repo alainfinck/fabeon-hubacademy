@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Clock, BookOpen, User } from 'lucide-react'
+import { Clock, BookOpen, User, Tag } from 'lucide-react'
 import type { Course } from '../types'
 import { CategoryBadge } from './CategoryBadge'
 import { levelLabels, formatLabels } from '../data/categories'
@@ -8,9 +8,10 @@ import { formatDuration } from '../utils/format'
 interface Props {
   course: Course
   showProgress?: number
+  showPrice?: boolean
 }
 
-export function CourseCard({ course, showProgress }: Props) {
+export function CourseCard({ course, showProgress, showPrice = true }: Props) {
   return (
     <Link
       to={`/cours/${course.slug}`}
@@ -34,6 +35,14 @@ export function CourseCard({ course, showProgress }: Props) {
           {course.title}
         </h3>
         <p className="text-sm text-muted mt-1 line-clamp-2">{course.subtitle}</p>
+        {showPrice && course.price && (
+          <p className="mt-4 flex items-baseline gap-2">
+            <Tag className="w-5 h-5 text-accent-500 dark:text-accent-400 shrink-0 self-center" />
+            <span className="font-display text-2xl sm:text-3xl font-bold text-accent-600 dark:text-accent-400 leading-none">
+              {course.price}
+            </span>
+          </p>
+        )}
         <div className="flex flex-wrap gap-2 mt-3">
           <span className="text-xs text-faint badge-muted px-2 py-0.5 rounded">
             {levelLabels[course.level]}

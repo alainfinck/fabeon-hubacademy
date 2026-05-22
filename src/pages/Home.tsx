@@ -2,34 +2,38 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight,
   Award,
-  Wrench,
   Play,
   CheckCircle2,
 } from 'lucide-react'
 import { useData } from '../context/DataContext'
 import { CategoryIcon } from '../components/CategoryIcon'
 import { PageError, PageLoader } from '../components/PageLoader'
-import { HomeOnlineSection } from '../components/home/HomeOnlineSection'
+import { PartnersSection } from '../components/PartnersSection'
+import { HomeProDepositSection } from '../components/home/HomeProDepositSection'
+import { HomeEnterpriseProjectsSection } from '../components/home/HomeEnterpriseProjectsSection'
+import { HomeLatestFormationsSection } from '../components/home/HomeLatestFormationsSection'
+import { HomeThemesSection } from '../components/home/HomeThemesSection'
+import { HomePlatformSection } from '../components/home/HomePlatformSection'
 import { HomeWorkshopsSection } from '../components/home/HomeWorkshopsSection'
-import { HomeSubscriptionSection } from '../components/home/HomeSubscriptionSection'
-import { HomeEnterpriseSection } from '../components/home/HomeEnterpriseSection'
+import { staticCategories } from '../data/staticCatalog'
 
 const stats = [
-  { value: '8+', label: 'Parcours certifiants' },
-  { value: '120+', label: 'Heures de formation' },
-  { value: '4', label: 'Ateliers équipés' },
+  { value: '12+', label: 'Parcours certifiants' },
+  { value: '150+', label: 'Heures de formation' },
+  { value: '8', label: 'Ateliers & labs IA' },
   { value: '500+', label: 'Apprenants formés' },
 ]
 
 const features = [
   'Contenus rédigés par des experts terrain',
   'Machines réelles : Zünd, HP Latex, Caldera',
-  'Progression sauvegardée dans votre espace',
-  'Ateliers pratiques à Illkirch-Graffenstaden',
+  'Parcours IA : visuels génératifs & workflow atelier',
+  'Ateliers pratiques et labs IA à Illkirch-Graffenstaden',
 ]
 
 export function Home() {
-  const { courses, categories, workshops, loading, error, refresh } = useData()
+  const { categories, courses, workshops, loading, error, refresh } = useData()
+  const heroCategories = categories.length > 0 ? categories : staticCategories
 
   if (loading) return <PageLoader />
   if (error) return <PageError message={error} onRetry={refresh} />
@@ -56,23 +60,28 @@ export function Home() {
               </h1>
               <p className="mt-6 text-lg text-muted leading-relaxed max-w-xl">
                 Calibration couleurs, pilotage grand format, découpe Zünd, Caldera RIP et ateliers
-                de prototypage — tout ce dont votre atelier a besoin, en un seul endroit.
+                de prototypage — tout ce dont votre atelier a besoin.
               </p>
               <div className="flex flex-wrap gap-4 mt-8">
-                <a
-                  href="#formation-en-ligne"
+                <Link
+                  to="/formation-en-ligne"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
                 >
                   Formation en ligne
                   <ArrowRight className="w-5 h-5" />
-                </a>
-                <a
-                  href="#ateliers-physiques"
+                </Link>
+                <Link
+                  to="/ateliers"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-theme hover:border-brand-500/50 text-body font-semibold transition-colors bg-surface"
                 >
-                  <Wrench className="w-5 h-5" />
                   Ateliers physiques
-                </a>
+                </Link>
+                <Link
+                  to="/ateliers?ia=1"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-fuchsia-500/40 text-fuchsia-700 dark:text-fuchsia-300 font-semibold transition-colors bg-fuchsia-500/10 hover:bg-fuchsia-500/15"
+                >
+                  Ateliers IA
+                </Link>
               </div>
               <ul className="mt-8 space-y-2">
                 {features.map((f) => (
@@ -85,26 +94,28 @@ export function Home() {
             </div>
 
             <div className="relative hidden lg:block">
-              <div className="aspect-square max-w-md mx-auto rounded-3xl hero-card border p-8 shadow-xl dark:shadow-2xl">
-                <div className="space-y-4">
-                  {[
-                    { label: 'Calibration ICC', pct: 78, color: 'bg-violet-500' },
-                    { label: 'Pilotage Latex 700', pct: 45, color: 'bg-cyan-500' },
-                    { label: 'Zünd — Router Dibond', pct: 12, color: 'bg-emerald-500' },
-                    { label: 'Caldera Nesting', pct: 0, color: 'bg-orange-500' },
-                  ].map((item) => (
-                    <div key={item.label} className="p-4 rounded-xl hero-card-inner border">
-                      <div className="flex justify-between text-sm mb-2">
-                        <span className="text-body">{item.label}</span>
-                        <span className="text-faint">{item.pct}%</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted">
+              <div className="max-w-md mx-auto rounded-3xl hero-card border p-6 shadow-xl dark:shadow-2xl">
+                <p className="text-xs font-semibold uppercase tracking-wider text-faint mb-3">
+                  7 thématiques — parcours & ateliers
+                </p>
+                <div className="space-y-2 max-h-[22rem] overflow-y-auto pr-1">
+                  {heroCategories.map((cat) => (
+                    <Link
+                      key={cat.id}
+                      to={`/formation-en-ligne?theme=${cat.id}`}
+                      className="block p-3 rounded-xl hero-card-inner border hover:border-brand-500/30 transition-colors group"
+                    >
+                      <div className="flex items-center gap-3">
                         <div
-                          className={`h-2 rounded-full ${item.color}`}
-                          style={{ width: `${item.pct}%` }}
-                        />
+                          className={`w-9 h-9 rounded-lg bg-gradient-to-br ${cat.color} flex items-center justify-center shrink-0`}
+                        >
+                          <CategoryIcon name={cat.icon} className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="text-sm font-medium text-body group-hover:text-brand-600 dark:group-hover:text-brand-300">
+                          {cat.label}
+                        </span>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
                 <div className="mt-6 flex items-center gap-3 p-4 rounded-xl bg-brand-500/10 border border-brand-500/20">
@@ -135,60 +146,19 @@ export function Home() {
         </div>
       </section>
 
-      <HomeOnlineSection courses={courses} />
+      <HomeLatestFormationsSection courses={courses} />
+
+      <HomeThemesSection categories={categories.length > 0 ? categories : staticCategories} courses={courses} />
 
       <HomeWorkshopsSection workshops={workshops} />
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <h2 className="font-display text-2xl sm:text-3xl font-bold text-heading text-center mb-4">
-          Domaines de formation
-        </h2>
-        <p className="text-muted text-center max-w-2xl mx-auto mb-12">
-          Parcours structurés par métier, du coloriste au poseur, du RIP operator au concepteur retail.
-        </p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/cours?categorie=${cat.id}`}
-              className="group p-6 rounded-2xl card-base hover:border-brand-500/30 transition-all card-glow"
-            >
-              <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4`}
-              >
-                <CategoryIcon name={cat.icon} className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="font-display font-semibold text-heading group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors">
-                {cat.label}
-              </h3>
-              <p className="text-sm text-muted mt-2">{cat.description}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <PartnersSection />
 
-      <HomeSubscriptionSection />
+      <HomeProDepositSection />
 
-      <HomeEnterpriseSection />
+      <HomeEnterpriseProjectsSection />
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="rounded-3xl hero-card border p-8 sm:p-12 flex flex-col lg:flex-row items-center gap-8">
-          <div className="flex-1">
-            <h2 className="font-display text-2xl font-bold text-heading">
-              Une question sur votre atelier ?
-            </h2>
-            <p className="text-muted mt-3 leading-relaxed">
-              Abonnement, atelier physique ou dépôt de projet — notre équipe vous répond rapidement.
-            </p>
-          </div>
-          <Link
-            to="/a-propos"
-            className="shrink-0 px-8 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold transition-colors"
-          >
-            Nous contacter
-          </Link>
-        </div>
-      </section>
+      <HomePlatformSection />
     </>
   )
 }

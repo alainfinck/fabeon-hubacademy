@@ -12,7 +12,7 @@ export function ThemeToggle({ className = '' }: Props) {
     <button
       type="button"
       onClick={toggleTheme}
-      className={`relative p-2 rounded-lg border border-theme bg-surface hover:bg-muted transition-colors ${className}`}
+      className={`relative p-2 rounded-lg border border-theme bg-surface hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50 ${className}`}
       aria-label={theme === 'dark' ? 'Activer le mode jour' : 'Activer le mode nuit'}
       title={theme === 'dark' ? 'Mode jour' : 'Mode nuit'}
     >

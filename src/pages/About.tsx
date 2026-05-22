@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Target, Users, Cpu, ArrowRight, MapPin, Phone } from 'lucide-react'
+import { BrandLogo } from '../components/BrandLogo'
 import { CONTACT } from '../data/contact'
+import { PartnersSection } from '../components/PartnersSection'
 
 const values = [
   {
@@ -20,14 +22,11 @@ const values = [
   },
 ]
 
-const partners = [
-  'HP', 'Mimaki', 'EFI', 'Zünd', 'Caldera', '3M', 'Avery Dennison', 'Esko',
-]
-
 export function About() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-3xl">
+        <BrandLogo size="xl" className="mb-8" />
         <h1 className="font-display text-3xl sm:text-4xl font-bold text-heading">
           À propos de Fabeon HubAcademy
         </h1>
@@ -54,21 +53,13 @@ export function About() {
         ))}
       </div>
 
-      <section className="mt-16">
-        <h2 className="font-display text-xl font-semibold text-heading mb-6">
-          Écosystème & partenaires
-        </h2>
-        <div className="flex flex-wrap gap-3">
-          {partners.map((p) => (
-            <span
-              key={p}
-              className="px-4 py-2 rounded-xl border border-theme bg-surface text-body text-sm font-medium"
-            >
-              {p}
-            </span>
-          ))}
-        </div>
-      </section>
+      <div className="mt-16 -mx-4 sm:-mx-6 lg:-mx-8">
+        <PartnersSection
+          title="Écosystème & partenaires"
+          subtitle="Nous formons sur les équipements et logiciels des principaux fabricants du secteur."
+          compact
+        />
+      </div>
 
       <section className="mt-16 rounded-3xl hero-card border p-8 sm:p-12">
         <h2 className="font-display text-2xl font-bold text-heading">
