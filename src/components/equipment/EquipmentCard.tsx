@@ -1,13 +1,14 @@
 import { Cpu, CheckCircle2 } from 'lucide-react'
-import type { EquipmentItem } from '../../data/equipment'
+import type { EquipmentCategory, EquipmentItem } from '../../data/equipment'
 import { CardCoverImage } from '../CardCoverImage'
 import { coverFallbackSeed } from '../../data/coverImages'
 
 interface Props {
   item: EquipmentItem
+  category?: EquipmentCategory
 }
 
-export function EquipmentCard({ item }: Props) {
+export function EquipmentCard({ item, category }: Props) {
   return (
     <article className="group rounded-2xl card-base overflow-hidden card-glow flex flex-col h-full">
       <div className="relative">
@@ -18,6 +19,13 @@ export function EquipmentCard({ item }: Props) {
           className="h-44"
           fallbackSeed={coverFallbackSeed(item.id)}
         />
+        {category && (
+          <span
+            className={`absolute top-3 left-3 z-10 text-xs font-semibold text-white px-2.5 py-0.5 rounded-full shadow-sm bg-gradient-to-br ${category.color}`}
+          >
+            {category.label}
+          </span>
+        )}
         {item.highlighted && (
           <span className="absolute top-3 right-3 z-10 text-xs font-semibold bg-accent-500 text-white px-2.5 py-0.5 rounded-full shadow-sm">
             Machine phare

@@ -12,16 +12,12 @@ import { EquipmentByCategoryBlock } from '../components/equipment/EquipmentByCat
 import { EquipmentCard } from '../components/equipment/EquipmentCard'
 import { SmartFactoryGallery } from '../components/smartfactory/SmartFactoryGallery'
 import { EquipmentRelatedFormations } from '../components/equipment/EquipmentRelatedFormations'
-import {
-  equipmentCategories,
-  getEquipmentByCategory,
-} from '../data/equipment'
+import { getAllEquipmentWithCategory } from '../data/equipment'
 import {
   SMART_FACTORY,
   smartFactoryEnvironment,
   smartFactoryServices,
 } from '../data/smartFactory'
-import { equipmentCategoryIcons } from '../components/equipment/equipmentCategoryIcons'
 import { coverFallbackSeed } from '../data/coverImages'
 import { CONTACT } from '../data/contact'
 
@@ -73,7 +69,7 @@ export function SmartFactory() {
             <div className="relative min-h-[220px] lg:min-h-full bg-muted/30 border-t lg:border-t-0 lg:border-l border-theme">
               <img
                 src={SMART_FACTORY.bannerImage}
-                alt="SmartFactory Fabéon"
+                alt={SMART_FACTORY.bannerImageAlt}
                 className="absolute inset-0 w-full h-full object-cover object-center"
                 loading="eager"
                 decoding="async"
@@ -89,36 +85,11 @@ export function SmartFactory() {
           <p className="text-muted text-sm mb-8 max-w-2xl">
             Équipements réels du site Fabéon — photos issues de l&apos;atelier et du campus.
           </p>
-          {equipmentCategories.map((category, index) => {
-            const items = getEquipmentByCategory(category.id)
-            const Icon = equipmentCategoryIcons[category.icon] ?? Factory
-            return (
-              <section
-                key={category.id}
-                id={`parc-${category.id}`}
-                className={`scroll-mt-24 py-10 ${index > 0 ? 'border-t border-theme' : 'pt-0'}`}
-              >
-                <header className="flex flex-wrap items-center gap-3 mb-6">
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br ${category.color}`}
-                  >
-                    <Icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-display text-xl font-bold text-heading">
-                      {category.label}
-                    </h3>
-                    <p className="text-sm text-muted">{category.description}</p>
-                  </div>
-                </header>
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {items.map((item) => (
-                    <EquipmentCard key={item.id} item={item} />
-                  ))}
-                </div>
-              </section>
-            )
-          })}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {getAllEquipmentWithCategory().map(({ item, category }) => (
+              <EquipmentCard key={item.id} item={item} category={category} />
+            ))}
+          </div>
         </section>
 
         <EquipmentRelatedFormations

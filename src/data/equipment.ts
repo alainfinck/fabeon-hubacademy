@@ -222,3 +222,12 @@ export function getAllEquipmentGroupedByCategory(): {
     }))
     .filter((g) => g.items.length > 0)
 }
+
+export function getAllEquipmentWithCategory(): {
+  item: EquipmentItem
+  category: EquipmentCategory
+}[] {
+  return equipmentCategories.flatMap((category) =>
+    getEquipmentByCategory(category.id).map((item) => ({ item, category }))
+  )
+}

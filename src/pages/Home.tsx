@@ -18,6 +18,7 @@ import { HomeInternationalSection } from '../components/home/HomeInternationalSe
 import { HomeExchangeHubSection } from '../components/home/HomeExchangeHubSection'
 import { HomeEditorialSection } from '../components/home/HomeEditorialSection'
 import { HomePresentationSection } from '../components/home/HomePresentationSection'
+import { HomeSmartFactorySection } from '../components/home/HomeSmartFactorySection'
 import { HomeWorkshopsSection } from '../components/home/HomeWorkshopsSection'
 import { staticCategories } from '../data/staticCatalog'
 import { HOME_SLOGAN } from '../data/brand'
@@ -164,6 +165,8 @@ export function Home() {
       <HomeInternationalSection />
 
       <HomePresentationSection />
+
+      <HomeSmartFactorySection />
 
       <HomeExchangeHubSection />
 

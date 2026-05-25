@@ -6,7 +6,8 @@ export const SMART_FACTORY = {
     'Accélérateur industriel au Parc d’Innovation — parc machines de pointe pour prototypage, pré-série et production flexible.',
   heroImage: '/smartfactory/hero-atelier.jpg',
   heroImageAlt: 'Atelier SmartFactory Fabéon — Parc d’Innovation Illkirch',
-  bannerImage: '/smartfactory/banner-smartfactory.png',
+  bannerImage: '/smartfactory/galerie-atelier-1.jpg',
+  bannerImageAlt: 'Atelier SmartFactory Fabéon — parc machines et production',
   intro: [
     'Fabéon réunit campus, studio et SmartFactory : un véritable accélérateur industriel pour accompagner la transformation digitale et responsable des entreprises, en valorisant vos idées en produits innovants, performants et prêts à être mis sur le marché.',
     'Dotée d’un parc machines de pointe — impression 2D, impression 3D petit et grand format, impression textile, électronique imprimée, sérigraphie, découpe, cabine de peinture — la SmartFactory offre une capacité de production complète et flexible, avec intégration possible de l’IoT, de la data et de l’intelligence artificielle dans vos projets.',
