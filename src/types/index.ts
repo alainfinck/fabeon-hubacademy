@@ -57,6 +57,8 @@ export interface Course {
   objectives: string[]
   prerequisites: string[]
   imageGradient: string
+  /** URL de couverture (cartes & fiche cours) */
+  imageUrl?: string
 }
 
 export type EventType = 'conference' | 'webinar' | 'salon' | 'masterclass' | 'meetup'
@@ -81,6 +83,7 @@ export interface HubEvent {
   free: boolean
   featured: boolean
   imageGradient: string
+  imageUrl?: string
 }
 
 export interface Workshop {
@@ -97,6 +100,7 @@ export interface Workshop {
   level: CourseLevel
   price: string
   imageGradient: string
+  imageUrl?: string
   /** Ateliers dédiés intelligence artificielle */
   ia?: boolean
 }
@@ -119,6 +123,17 @@ export interface EnterpriseProject {
 
 export interface EnterpriseProjectDetail extends EnterpriseProject {
   contactName: string
+}
+
+export interface ExchangePost {
+  id: number
+  topic: CategoryId
+  title: string
+  body: string
+  authorName: string
+  authorRole: string | null
+  replyCount: number
+  createdAt: string
 }
 
 export interface AuthUser {

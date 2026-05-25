@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import { CheckCircle2, Infinity, Building2 } from 'lucide-react'
+import { CardCoverImage } from '../CardCoverImage'
+import { coverFallbackSeed, getSubscriptionCoverImage } from '../../data/coverImages'
 import { subscriptionPlans } from '../../data/subscriptions'
 import { CONTACT } from '../../data/contact'
 
@@ -26,14 +28,27 @@ export function HomeSubscriptionSection({ embedded = false }: Props) {
         {subscriptionPlans.map((plan) => (
           <div
             key={plan.id}
-            className={`relative rounded-2xl border p-6 flex flex-col ${
+            className={`group relative rounded-2xl border overflow-hidden flex flex-col ${
               plan.highlighted
                 ? 'border-brand-500/50 bg-brand-500/5 shadow-lg shadow-brand-500/10'
                 : 'border-theme card-base'
             }`}
           >
+            <CardCoverImage
+              src={getSubscriptionCoverImage(plan)}
+              imageGradient={
+                plan.highlighted
+                  ? 'from-brand-600 to-cyan-800'
+                  : 'from-slate-600 to-slate-800'
+              }
+              alt={plan.name}
+              className="h-28"
+              overlay="light"
+              fallbackSeed={coverFallbackSeed(plan.id)}
+            />
+            <div className="p-6 flex flex-col flex-1">
             {plan.highlighted && (
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-xs font-semibold bg-brand-600 text-white px-3 py-0.5 rounded-full">
+              <span className="absolute top-3 right-3 z-10 text-xs font-semibold bg-brand-600 text-white px-3 py-0.5 rounded-full shadow-sm">
                 Recommandé
               </span>
             )}
@@ -67,6 +82,7 @@ export function HomeSubscriptionSection({ embedded = false }: Props) {
             >
               {plan.cta}
             </a>
+            </div>
           </div>
         ))}
       </div>

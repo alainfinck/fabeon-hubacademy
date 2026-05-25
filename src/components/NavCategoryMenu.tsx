@@ -86,10 +86,10 @@ export function NavCategoryMenu({
       </button>
 
       <div
-        className="nav-dropdown-panel absolute top-full left-1/2 -translate-x-1/2 mt-1 pt-1 opacity-0 invisible translate-y-1 group-hover/nav-cat:opacity-100 group-hover/nav-cat:visible group-hover/nav-cat:translate-y-0 group-focus-within/nav-cat:opacity-100 group-focus-within/nav-cat:visible group-focus-within/nav-cat:translate-y-0 transition-all duration-200 ease-out z-[100]"
+        className="nav-dropdown-panel absolute top-full left-1/2 -translate-x-1/2 opacity-0 invisible translate-y-1 group-hover/nav-cat:opacity-100 group-hover/nav-cat:visible group-hover/nav-cat:translate-y-0 group-focus-within/nav-cat:opacity-100 group-focus-within/nav-cat:visible group-focus-within/nav-cat:translate-y-0 transition-all duration-200 ease-out z-[100]"
         role="menu"
       >
-        <div className="min-w-[16rem] rounded-xl border border-theme bg-white dark:bg-slate-950 shadow-xl py-2 overflow-hidden">
+        <div className="w-[24rem] max-w-[min(24rem,calc(100vw-2rem))] rounded-xl border border-theme bg-white dark:bg-slate-950 shadow-xl py-2 overflow-hidden">
           <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-faint">
             {category.label}
           </p>
@@ -110,7 +110,7 @@ export function NavCategoryMenu({
                 <ItemIcon className="w-5 h-5 shrink-0 mt-0.5 text-brand-600 dark:text-brand-400" />
                 <span>
                   <span className="block text-base font-semibold leading-snug">{item.label}</span>
-                  <span className="block text-sm text-muted mt-1 leading-relaxed line-clamp-2">
+                  <span className="block text-sm text-muted mt-1 leading-relaxed">
                     {item.description}
                   </span>
                 </span>

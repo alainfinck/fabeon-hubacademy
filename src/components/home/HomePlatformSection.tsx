@@ -1,6 +1,19 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
+import { CardCoverImage } from '../CardCoverImage'
+import { coverFallbackSeed } from '../../data/coverImages'
 import { navCategories } from '../../data/nav'
+
+const platformCoverImages: Record<string, string> = {
+  formation:
+    'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=640&h=240&q=80',
+  presentiel:
+    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=640&h=240&q=80',
+  entreprises:
+    'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=640&h=240&q=80',
+  fabeon:
+    'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=640&h=240&q=80',
+}
 
 export function HomePlatformSection() {
   return (
@@ -18,8 +31,17 @@ export function HomePlatformSection() {
           return (
             <div
               key={category.id}
-              className="rounded-2xl card-base p-5 flex flex-col hover:border-brand-500/30 transition-all"
+              className="group rounded-2xl card-base overflow-hidden flex flex-col hover:border-brand-500/30 transition-all"
             >
+              <CardCoverImage
+                src={platformCoverImages[category.id] ?? platformCoverImages.formation}
+                imageGradient="from-brand-700 to-slate-800"
+                alt={category.label}
+                className="h-24"
+                overlay="light"
+                fallbackSeed={coverFallbackSeed(`platform-${category.id}`)}
+              />
+              <div className="p-5 flex flex-col flex-1">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-10 h-10 rounded-lg bg-brand-500/15 flex items-center justify-center">
                   <Icon className="w-5 h-5 text-brand-600 dark:text-brand-400" />
@@ -50,6 +72,7 @@ export function HomePlatformSection() {
                 Découvrir
                 <ArrowRight className="w-4 h-4" />
               </Link>
+              </div>
             </div>
           )
         })}

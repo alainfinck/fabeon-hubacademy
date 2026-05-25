@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Send, Factory, Users, FileText, ArrowLeft } from 'lucide-react'
 import { PageHeader } from '../components/PageHeader'
 import { EnterpriseProjectForm } from '../components/enterprise/EnterpriseProjectForm'
+import { EquipmentByCategoryBlock } from '../components/equipment/EquipmentByCategoryBlock'
 
 const steps = [
   {
@@ -65,6 +66,14 @@ export function EnterpriseProjectSubmit() {
           </div>
 
           <EnterpriseProjectForm />
+        </div>
+
+        <div className="mt-12 max-w-4xl">
+          <EquipmentByCategoryBlock
+            title="Matériel disponible pour votre projet"
+            description="Indiquez dans votre brief les procédés adaptés : nos apprenants interviennent sur ce parc machines réel à Illkirch-Graffenstaden."
+            variant="compact"
+          />
         </div>
       </div>
     </>

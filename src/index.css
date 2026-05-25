@@ -23,10 +23,12 @@
 
 html {
   scroll-behavior: smooth;
+  /* 17px au lieu de 16px — augmente légèrement toutes les tailles en rem */
+  font-size: 106.25%;
 }
 
 body {
-  @apply bg-slate-50 text-slate-900 antialiased font-sans;
+  @apply bg-slate-50 text-slate-900 antialiased font-sans text-base leading-relaxed;
   @apply dark:bg-slate-950 dark:text-slate-100;
 }
 
@@ -115,10 +117,14 @@ body {
 
 .nav-dropdown-panel {
   pointer-events: none;
+  /* Padding (not margin) so the gap between trigger and menu stays hoverable */
+  padding-top: 0.5rem;
 }
 
 .group\/nav-cat:hover .nav-dropdown-panel,
-.group\/nav-cat:focus-within .nav-dropdown-panel {
+.group\/nav-cat:focus-within .nav-dropdown-panel,
+.group\/nav-auth:hover .nav-dropdown-panel,
+.group\/nav-auth:focus-within .nav-dropdown-panel {
   pointer-events: auto;
 }
 

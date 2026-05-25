@@ -11,7 +11,15 @@ import {
   GraduationCap,
   Building2,
   Sparkles,
+  Factory,
+  Store,
+  MessagesSquare,
+  Newspaper,
+  Layers,
 } from 'lucide-react'
+import { FABEON_PRESENTATION } from './fabeonPresentation'
+import { SMART_FACTORY } from './smartFactory'
+import { EXCHANGE_HUB, MARKETPLACE } from './platform'
 
 export interface NavItem {
   to: string
@@ -39,7 +47,21 @@ export const navCategories: NavCategory[] = [
         label: 'Formation en ligne',
         icon: MonitorPlay,
         title: 'Formation en ligne',
-        description: 'Cours vidéo : calibration, grand format, Caldera, Zünd.',
+        description: 'Cours vidéo en 5 langues : calibration, grand format, Caldera, Zünd.',
+      },
+      {
+        to: MARKETPLACE.path,
+        label: MARKETPLACE.shortLabel,
+        icon: Store,
+        title: MARKETPLACE.shortLabel,
+        description: 'Déposez vos formations liées à l\'impression (formateurs externes).',
+      },
+      {
+        to: EXCHANGE_HUB.path,
+        label: EXCHANGE_HUB.shortLabel,
+        icon: MessagesSquare,
+        title: EXCHANGE_HUB.shortLabel,
+        description: 'Partagez questions et astuces : impression, RIP, découpe, IA…',
       },
       {
         to: '/formation-en-ligne?theme=ia',
@@ -114,16 +136,44 @@ export const navCategories: NavCategory[] = [
     ],
   },
   {
-    id: 'academie',
-    label: 'Académie',
-    icon: Info,
+    id: 'fabeon',
+    label: 'Fabéon',
+    icon: Layers,
     items: [
+      {
+        to: SMART_FACTORY.path,
+        label: 'SmartFactory',
+        icon: Factory,
+        title: SMART_FACTORY.title,
+        description: 'Parc machines : 3D, UV, latex, éco-solvant, Zünd 250×300 cm, sublimation.',
+      },
+      {
+        to: FABEON_PRESENTATION.path,
+        label: 'Présentation',
+        icon: Layers,
+        title: FABEON_PRESENTATION.title,
+        description: 'Campus, Start-up Studio et espaces de travail au Parc d’Innovation.',
+      },
+      {
+        to: '/actualites',
+        label: 'À la une',
+        icon: Newspaper,
+        title: 'À la une',
+        description: 'Articles Fabéon : grand format, métiers et formations.',
+      },
       {
         to: '/a-propos',
         label: 'À propos',
         icon: Info,
         title: 'À propos',
         description: 'Fabeon HubAcademy et nos formateurs.',
+      },
+      {
+        to: '/materiel',
+        label: 'Matériel de formation',
+        icon: GraduationCap,
+        title: 'Matériel de formation',
+        description: 'Équipements du HubAcademy utilisés en atelier et en cours.',
       },
     ],
   },

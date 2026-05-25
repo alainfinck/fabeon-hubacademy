@@ -18,6 +18,7 @@ import { useLearning } from '../context/LearningContext'
 import { useCourse } from '../hooks/useCourse'
 import { getAllLessons } from '../lib/courseUtils'
 import { formatDuration } from '../utils/format'
+import { CourseCoverImage } from '../components/CourseCoverImage'
 
 const lessonTypeIcons: Record<string, string> = {
   video: 'Vidéo',
@@ -41,8 +42,9 @@ export function CourseDetail() {
 
   return (
     <div>
-      <div className={`bg-gradient-to-br ${course.imageGradient} relative`}>
-        <div className="absolute inset-0 bg-black/30 dark:bg-black/40" />
+      <div className="relative">
+        <CourseCoverImage course={course} className="h-56 sm:h-72" sizes="100vw" />
+        <div className="absolute inset-0 bg-black/40" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <Link to="/cours" className="text-sm text-white/80 hover:text-white mb-4 inline-block">
             ← Retour au catalogue

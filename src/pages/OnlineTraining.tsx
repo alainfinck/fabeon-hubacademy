@@ -95,7 +95,7 @@ export function OnlineTraining() {
         icon={MonitorPlay}
         badge="Formation en ligne"
         title="Apprenez à votre rythme"
-        description="Modules vidéo, textes, quiz et suivi de progression. Filtrez par thème, niveau ou mot-clé."
+        description="Modules vidéo, textes, quiz et suivi de progression — disponibles en 5 langues. Filtrez par thème, niveau ou mot-clé. Formateurs externes : publiez vos parcours via la marketplace."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20">

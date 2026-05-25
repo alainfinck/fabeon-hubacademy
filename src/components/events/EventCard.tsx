@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Calendar, MapPin, Users, ArrowRight, Star } from 'lucide-react'
 import type { HubEvent } from '../../types'
+import { CardCoverImage } from '../CardCoverImage'
+import { coverFallbackSeed, getEventCoverImage } from '../../data/coverImages'
 import {
   eventFormatLabels,
   eventTypeColors,
@@ -19,19 +21,26 @@ export function EventCard({ event }: Props) {
   return (
     <Link
       to={`/evenements/${event.slug}`}
-      className={`group block rounded-2xl card-base overflow-hidden card-glow transition-all ${
+      className={`group relative block rounded-2xl card-base overflow-hidden card-glow transition-all ${
         past ? 'opacity-75' : 'hover:border-brand-500/30'
       }`}
     >
-      <div className={`relative h-32 bg-gradient-to-br ${event.imageGradient}`}>
+      <div className="relative">
+        <CardCoverImage
+          src={getEventCoverImage(event)}
+          imageGradient={event.imageGradient}
+          alt={event.title}
+          className="h-36"
+          fallbackSeed={coverFallbackSeed(event.id)}
+        />
         {event.featured && !past && (
-          <span className="absolute top-3 left-3 inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-white/90 dark:bg-slate-900/90 text-heading">
+          <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full bg-white/90 dark:bg-slate-900/90 text-heading shadow-sm">
             <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
             À la une
           </span>
         )}
         {past && (
-          <span className="absolute top-3 right-3 text-xs font-medium px-2 py-0.5 rounded-full bg-slate-900/80 text-white">
+          <span className="absolute top-3 right-3 z-10 text-xs font-medium px-2 py-0.5 rounded-full bg-slate-900/80 text-white">
             Terminé
           </span>
         )}

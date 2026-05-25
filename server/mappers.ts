@@ -1,4 +1,9 @@
 import type { Course, HubEvent, Lesson, Module, Workshop } from '../src/types/index.js'
+import {
+  getCourseCoverImage,
+  getEventCoverImage,
+  getWorkshopCoverImage,
+} from '../src/data/coverImages.js'
 import { jsonParse } from './db.js'
 
 interface CourseRow {
@@ -66,6 +71,10 @@ export function mapCourseRow(row: CourseRow, modules: Module[] = []): Course {
     objectives: jsonParse<string[]>(row.objectives, []),
     prerequisites: jsonParse<string[]>(row.prerequisites, []),
     imageGradient: row.image_gradient,
+    imageUrl: getCourseCoverImage({
+      id: row.id,
+      category: row.category as Course['category'],
+    }),
     modules,
   }
 }
@@ -131,6 +140,10 @@ export function mapEventRow(row: {
     free: row.free === 1,
     featured: row.featured === 1,
     imageGradient: row.image_gradient,
+    imageUrl: getEventCoverImage({
+      id: row.id,
+      type: row.type as HubEvent['type'],
+    }),
   }
   if (row.end_date) event.endDate = row.end_date
   if (row.time_label) event.time = row.time_label
@@ -171,5 +184,9 @@ export function mapWorkshopRow(row: {
     imageGradient: row.image_gradient,
   }
   if (row.ia === 1) workshop.ia = true
+  workshop.imageUrl = getWorkshopCoverImage({
+    id: row.id,
+    ia: row.ia === 1,
+  })
   return workshop
 }

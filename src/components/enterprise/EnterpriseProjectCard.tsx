@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { Building2, Calendar, ArrowRight, Tag } from 'lucide-react'
 import type { EnterpriseProject } from '../../types'
+import { CardCoverImage } from '../CardCoverImage'
+import { coverFallbackSeed, getEnterpriseProjectCoverImage } from '../../data/coverImages'
 import {
   excerpt,
   formatProjectDate,
@@ -16,8 +18,17 @@ export function EnterpriseProjectCard({ project }: Props) {
   return (
     <Link
       to={`/projets-entreprises/${project.id}`}
-      className="group block p-6 rounded-2xl card-base hover:border-brand-500/30 transition-all card-glow"
+      className="group block rounded-2xl card-base overflow-hidden hover:border-brand-500/30 transition-all card-glow"
     >
+      <CardCoverImage
+        src={getEnterpriseProjectCoverImage(project)}
+        imageGradient="from-brand-600 to-slate-800"
+        alt={project.projectType}
+        className="h-28"
+        overlay="light"
+        fallbackSeed={coverFallbackSeed(`project-${project.id}`)}
+      />
+      <div className="p-6">
       <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
         <span
           className={`inline-flex text-xs font-medium px-2.5 py-0.5 rounded-full border ${projectStatusColors[project.status]}`}
@@ -48,6 +59,7 @@ export function EnterpriseProjectCard({ project }: Props) {
           Voir le projet
           <ArrowRight className="w-3.5 h-3.5" />
         </span>
+      </div>
       </div>
     </Link>
   )

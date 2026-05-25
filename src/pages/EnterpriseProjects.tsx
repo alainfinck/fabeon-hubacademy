@@ -7,6 +7,7 @@ import { PageHeader } from '../components/PageHeader'
 import { PageError, PageLoader } from '../components/PageLoader'
 import { EnterpriseProjectCard } from '../components/enterprise/EnterpriseProjectCard'
 import { projectStatusLabels } from '../lib/enterpriseProjectUtils'
+import { EquipmentByCategoryBlock } from '../components/equipment/EquipmentByCategoryBlock'
 
 type FilterValue = 'all' | EnterpriseProjectStatus
 
@@ -104,6 +105,10 @@ export function EnterpriseProjects() {
         {error && (
           <p className="text-sm text-red-600 dark:text-red-400 mb-4">{error}</p>
         )}
+
+        <div className="mb-10">
+          <EquipmentByCategoryBlock variant="compact" />
+        </div>
 
         {loading ? (
           <PageLoader />

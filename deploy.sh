@@ -20,7 +20,7 @@ Projet Vercel : $VERCEL_PROJECT
 Options:
   --prod, -p      Déploiement production (défaut)
   --preview       Déploiement preview (URL de test)
-  --prebuilt      Build local (npm run build) puis envoi de dist/
+  --prebuilt      Build local (vercel build) puis envoi de .vercel/output
   -m, --message   Message de déploiement (optionnel)
   -h, --help      Afficher cette aide
 
@@ -51,7 +51,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-VERCEL_ARGS=(--yes --name "$VERCEL_PROJECT")
+VERCEL_ARGS=(--yes)
 
 if [[ -n "$MESSAGE" ]]; then
   VERCEL_ARGS+=(--meta "deployMessage=$MESSAGE")
@@ -82,8 +82,19 @@ if [[ ! -f .vercel/project.json ]]; then
 fi
 
 if [[ "$PREBUILT" == "true" ]]; then
-  echo "→ Build local…"
-  npm run build
+  PULL_ENV="preview"
+  if [[ "$PROD" == "true" ]]; then
+    PULL_ENV="production"
+  fi
+  echo "→ Synchronisation des réglages Vercel ($PULL_ENV)…"
+  npx vercel pull --yes --environment="$PULL_ENV"
+
+  echo "→ Build local Vercel (génère .vercel/output)…"
+  BUILD_ARGS=(--yes)
+  if [[ "$PROD" == "true" ]]; then
+    BUILD_ARGS+=(--prod)
+  fi
+  npx vercel build "${BUILD_ARGS[@]}"
   echo "→ Déploiement du build précompilé…"
   VERCEL_ARGS+=(--prebuilt)
 else

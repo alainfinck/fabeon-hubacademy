@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import type { Category, Course } from '../../types'
 import { CategoryIcon } from '../CategoryIcon'
+import { CardCoverImage } from '../CardCoverImage'
+import { coverFallbackSeed, getCategoryCoverImage } from '../../data/coverImages'
 
 function parsePriceEuro(price: string): number | null {
   const m = price.match(/(\d+)/)
@@ -46,11 +48,16 @@ export function HomeThemesSection({ categories, courses }: Props) {
                 to={`/formation-en-ligne?theme=${cat.id}`}
                 className="group flex flex-col rounded-2xl card-base overflow-hidden hover:border-brand-500/40 transition-all card-glow"
               >
-                <div
-                  className={`h-24 bg-gradient-to-br ${cat.color} relative flex items-end p-5`}
-                >
-                  <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                    <CategoryIcon name={cat.icon} className="w-6 h-6 text-white" />
+                <div className="relative">
+                  <CardCoverImage
+                    src={getCategoryCoverImage(cat.id)}
+                    imageGradient={`${cat.color}`}
+                    alt={cat.label}
+                    className="h-32"
+                    fallbackSeed={coverFallbackSeed(cat.id)}
+                  />
+                  <div className="absolute bottom-4 left-4 z-10 w-12 h-12 rounded-xl bg-white/25 backdrop-blur flex items-center justify-center border border-white/30">
+                    <CategoryIcon name={cat.icon} className="w-6 h-6 text-white drop-shadow" />
                   </div>
                 </div>
                 <div className="p-6 flex flex-col flex-1">

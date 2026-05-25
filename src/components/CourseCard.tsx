@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Clock, BookOpen, User, Tag } from 'lucide-react'
 import type { Course } from '../types'
 import { CategoryBadge } from './CategoryBadge'
+import { CourseCoverImage } from './CourseCoverImage'
 import { levelLabels, formatLabels } from '../data/categories'
 import { formatDuration } from '../utils/format'
 
@@ -15,20 +16,24 @@ export function CourseCard({ course, showProgress, showPrice = true }: Props) {
   return (
     <Link
       to={`/cours/${course.slug}`}
-      className="group block rounded-2xl border border-theme bg-surface overflow-hidden card-glow transition-all duration-300 hover:border-brand-500/30"
+      className="group relative block rounded-2xl border border-theme bg-surface overflow-hidden card-glow transition-all duration-300 hover:border-brand-500/30"
     >
-      <div
-        className={`h-36 bg-gradient-to-br ${course.imageGradient} relative overflow-hidden`}
-      >
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 dark:bg-black/20 dark:group-hover:bg-black/10 transition-colors" />
-        <div className="absolute bottom-3 left-3">
-          <CategoryBadge categoryId={course.category} />
+      <div className="relative">
+        <CourseCoverImage
+          course={course}
+          className="h-40"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 304px"
+        />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute bottom-3 left-3 z-10">
+            <CategoryBadge categoryId={course.category} />
+          </div>
+          {course.featured && (
+            <span className="absolute top-3 right-3 z-10 text-xs font-semibold bg-accent-500 text-white px-2 py-0.5 rounded-full shadow-sm">
+              Populaire
+            </span>
+          )}
         </div>
-        {course.featured && (
-          <span className="absolute top-3 right-3 text-xs font-semibold bg-accent-500 text-white px-2 py-0.5 rounded-full">
-            Populaire
-          </span>
-        )}
       </div>
       <div className="p-5">
         <h3 className="font-display font-semibold text-lg text-heading group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors line-clamp-2">

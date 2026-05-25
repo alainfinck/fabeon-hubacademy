@@ -4,6 +4,12 @@ import type { Workshop } from '../../types'
 import { workshopExamples } from '../../data/workshopExamples'
 import { levelLabels } from '../../data/categories'
 import { formatDate } from '../../utils/format'
+import { CardCoverImage } from '../CardCoverImage'
+import {
+  coverFallbackSeed,
+  getWorkshopCoverImage,
+  getWorkshopExampleCoverImage,
+} from '../../data/coverImages'
 
 interface Props {
   workshops: Workshop[]
@@ -47,9 +53,15 @@ export function HomeWorkshopsSection({ workshops, embedded = false, iaHighlight 
           {upcoming.map((w) => (
             <article
               key={w.id}
-              className="rounded-2xl card-base overflow-hidden card-glow flex flex-col"
+              className="group rounded-2xl card-base overflow-hidden card-glow flex flex-col"
             >
-              <div className={`h-28 bg-gradient-to-br ${w.imageGradient}`} />
+              <CardCoverImage
+                src={getWorkshopCoverImage(w)}
+                imageGradient={w.imageGradient}
+                alt={w.title}
+                className="h-32"
+                fallbackSeed={coverFallbackSeed(w.id)}
+              />
               <div className="p-6 flex flex-col flex-1">
                 <div className="flex flex-wrap gap-2 mb-3">
                   {w.ia && (
@@ -103,9 +115,15 @@ export function HomeWorkshopsSection({ workshops, embedded = false, iaHighlight 
           {workshopExamples.map((ex) => (
             <div
               key={ex.id}
-              className="rounded-2xl border border-theme overflow-hidden card-glow bg-surface"
+              className="group rounded-2xl border border-theme overflow-hidden card-glow bg-surface"
             >
-              <div className={`h-24 bg-gradient-to-br ${ex.imageGradient}`} />
+              <CardCoverImage
+                src={getWorkshopExampleCoverImage(ex)}
+                imageGradient={ex.imageGradient}
+                alt={ex.title}
+                className="h-28"
+                fallbackSeed={coverFallbackSeed(ex.id)}
+              />
               <div className="p-5">
                 <span className="text-xs text-brand-600 dark:text-brand-400 font-medium">
                   {ex.category}

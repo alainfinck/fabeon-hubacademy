@@ -6,7 +6,9 @@ import type {
   EnterpriseProject,
   EnterpriseProjectDetail,
   EnterpriseProjectStatus,
+  ExchangePost,
   HubEvent,
+  CategoryId,
   EventType,
   UserProgress,
   Workshop,
@@ -134,6 +136,27 @@ export const api = {
 
   getEnterpriseProject: (id: string | number) =>
     request<EnterpriseProjectDetail>(`/enterprise-projects/${id}`),
+
+  getExchangePosts: (topic?: CategoryId | 'all') =>
+    request<ExchangePost[]>(
+      topic && topic !== 'all' ? `/exchange-posts?topic=${topic}` : '/exchange-posts'
+    ),
+
+  getExchangePost: (id: string | number) =>
+    request<ExchangePost>(`/exchange-posts/${id}`),
+
+  submitExchangePost: (data: {
+    topic: CategoryId
+    title: string
+    body: string
+    authorName: string
+    authorRole?: string
+    email?: string
+  }) =>
+    request<{ id: number; ok: boolean }>('/exchange-posts', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
 
   submitEnterpriseProject: (data: {
     company: string

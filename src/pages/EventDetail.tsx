@@ -13,6 +13,8 @@ import {
 import type { HubEvent } from '../types'
 import { api } from '../api/client'
 import { CONTACT } from '../data/contact'
+import { CardCoverImage } from '../components/CardCoverImage'
+import { coverFallbackSeed, getEventCoverImage } from '../data/coverImages'
 import { PageError, PageLoader } from '../components/PageLoader'
 import {
   eventFormatLabels,
@@ -54,7 +56,14 @@ export function EventDetail() {
 
   return (
     <div className="pb-20">
-      <div className={`h-48 sm:h-64 bg-gradient-to-br ${event.imageGradient}`} />
+      <CardCoverImage
+        src={getEventCoverImage(event)}
+        imageGradient={event.imageGradient}
+        alt={event.title}
+        className="h-48 sm:h-64"
+        overlay="strong"
+        fallbackSeed={coverFallbackSeed(event.id)}
+      />
 
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative">
         <Link

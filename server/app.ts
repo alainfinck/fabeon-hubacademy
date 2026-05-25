@@ -12,6 +12,8 @@ import {
 } from './enterpriseProjects.js'
 import { buildModules, mapCourseRow, mapEventRow, mapWorkshopRow } from './mappers.js'
 import { seedEvents } from './seedEvents.js'
+import { seedExchangeHub } from './seedExchangeHub.js'
+import { mapExchangePost } from './exchangeHub.js'
 import { migrateCoursePrices } from './migrateCoursePrices.js'
 import { migrateIaContent } from './migrateIaContent.js'
 import { createSessionToken, hashPassword, verifyPassword } from './auth.js'
@@ -22,6 +24,7 @@ migrateContactInfo()
 migrateAuthTables()
 seedEnterpriseProjects()
 seedEvents()
+seedExchangeHub()
 migrateCoursePrices()
 migrateIaContent()
 
@@ -432,6 +435,89 @@ app.get('/api/enterprise-projects/:id', (req, res) => {
     return
   }
   res.json(mapEnterpriseProjectDetail(row))
+})
+
+app.get('/api/exchange-posts', (req, res) => {
+  const topic = req.query.topic as string | undefined
+  const db = getDb()
+  const rows = topic && topic !== 'all'
+    ? (db
+        .prepare(
+          `SELECT id, topic, title, body, author_name, author_role, reply_count, created_at
+           FROM exchange_posts WHERE topic = ? ORDER BY created_at DESC`
+        )
+        .all(topic) as Parameters<typeof mapExchangePost>[0][])
+    : (db
+        .prepare(
+          `SELECT id, topic, title, body, author_name, author_role, reply_count, created_at
+           FROM exchange_posts ORDER BY created_at DESC`
+        )
+        .all() as Parameters<typeof mapExchangePost>[0][])
+
+  res.json(rows.map(mapExchangePost))
+})
+
+app.get('/api/exchange-posts/:id', (req, res) => {
+  const row = getDb()
+    .prepare(
+      `SELECT id, topic, title, body, author_name, author_role, reply_count, created_at
+       FROM exchange_posts WHERE id = ?`
+    )
+    .get(req.params.id) as Parameters<typeof mapExchangePost>[0] | undefined
+
+  if (!row) {
+    res.status(404).json({ error: 'Échange introuvable' })
+    return
+  }
+  res.json(mapExchangePost(row))
+})
+
+app.post('/api/exchange-posts', (req, res) => {
+  const { topic, title, body, authorName, authorRole, email } = req.body as {
+    topic?: string
+    title?: string
+    body?: string
+    authorName?: string
+    authorRole?: string
+    email?: string
+  }
+
+  const validTopics = [
+    'calibration',
+    'impression',
+    'decoupe',
+    'logiciels',
+    'ateliers',
+    'communication',
+    'ia',
+  ]
+
+  if (
+    !topic ||
+    !validTopics.includes(topic) ||
+    !title?.trim() ||
+    !body?.trim() ||
+    !authorName?.trim()
+  ) {
+    res.status(400).json({ error: 'Champs obligatoires manquants' })
+    return
+  }
+
+  const result = getDb()
+    .prepare(
+      `INSERT INTO exchange_posts (topic, title, body, author_name, author_role, email)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    )
+    .run(
+      topic,
+      title.trim(),
+      body.trim(),
+      authorName.trim(),
+      authorRole?.trim() || null,
+      email?.trim() || null
+    )
+
+  res.status(201).json({ id: result.lastInsertRowid, ok: true })
 })
 
 app.post('/api/enterprise-projects', (req, res) => {

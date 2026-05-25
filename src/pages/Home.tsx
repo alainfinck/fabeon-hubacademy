@@ -14,8 +14,13 @@ import { HomeEnterpriseProjectsSection } from '../components/home/HomeEnterprise
 import { HomeLatestFormationsSection } from '../components/home/HomeLatestFormationsSection'
 import { HomeThemesSection } from '../components/home/HomeThemesSection'
 import { HomePlatformSection } from '../components/home/HomePlatformSection'
+import { HomeInternationalSection } from '../components/home/HomeInternationalSection'
+import { HomeExchangeHubSection } from '../components/home/HomeExchangeHubSection'
+import { HomeEditorialSection } from '../components/home/HomeEditorialSection'
+import { HomePresentationSection } from '../components/home/HomePresentationSection'
 import { HomeWorkshopsSection } from '../components/home/HomeWorkshopsSection'
 import { staticCategories } from '../data/staticCatalog'
+import { HOME_SLOGAN } from '../data/brand'
 
 const stats = [
   { value: '12+', label: 'Parcours certifiants' },
@@ -25,6 +30,9 @@ const stats = [
 ]
 
 const features = [
+  'Formations disponibles en 5 langues (FR, EN, DE, ES, IT)',
+  'Marketplace formateurs : déposez vos parcours liés à l\'impression',
+  'Hub d\'échange : partagez sur impression, RIP, découpe et IA',
   'Contenus rédigés par des experts terrain',
   'Machines réelles : Zünd, HP Latex, Caldera',
   'Parcours IA : visuels génératifs & workflow atelier',
@@ -58,9 +66,14 @@ export function Home() {
                   fabrication
                 </span>
               </h1>
-              <p className="mt-6 text-lg text-muted leading-relaxed max-w-xl">
+              <p className="mt-5 text-xl sm:text-2xl font-display font-semibold text-heading leading-snug max-w-xl">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-cyan-600 to-accent-500 dark:from-brand-400 dark:via-cyan-400 dark:to-accent-400">
+                  {HOME_SLOGAN}
+                </span>
+              </p>
+              <p className="mt-5 text-lg text-muted leading-relaxed max-w-xl">
                 Calibration couleurs, pilotage grand format, découpe Zünd, Caldera RIP et ateliers
-                de prototypage — tout ce dont votre atelier a besoin.
+                de prototypage — en 5 langues, avec une marketplace pour les formateurs externes.
               </p>
               <div className="flex flex-wrap gap-4 mt-8">
                 <Link
@@ -147,6 +160,14 @@ export function Home() {
       </section>
 
       <HomeLatestFormationsSection courses={courses} />
+
+      <HomeInternationalSection />
+
+      <HomePresentationSection />
+
+      <HomeExchangeHubSection />
+
+      <HomeEditorialSection />
 
       <HomeThemesSection categories={categories.length > 0 ? categories : staticCategories} courses={courses} />
 

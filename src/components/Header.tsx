@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ArrowRight, LogIn, UserPlus, LogOut, User } from 'lucide-react'
+import { Menu, X, ArrowRight, LogOut, User } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
 import { ThemeToggle } from './ThemeToggle'
 import { NavTooltip } from './NavTooltip'
 import { NavCategoryMenu } from './NavCategoryMenu'
+import { NavAuthMenu } from './NavAuthMenu'
 import { navCategories } from '../data/nav'
 import { useAuth } from '../context/AuthContext'
 
@@ -26,7 +27,7 @@ export function Header() {
         <div className="flex items-center justify-between h-[4.5rem] gap-2">
           <NavTooltip
             title="Fabeon HubAcademy"
-            description="Formation impression numérique & communication visuelle."
+            description="Formation impression en 5 langues — marketplace formateurs externes."
           >
             <Link to="/" className="flex items-center shrink-0 group rounded-lg py-1">
               <BrandLogo size="md" className="sm:h-12" />
@@ -73,22 +74,7 @@ export function Header() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  to="/connexion"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg nav-item"
-                >
-                  <LogIn className="w-4 h-4" />
-                  <span className="hidden xl:inline">Connexion</span>
-                </Link>
-                <Link
-                  to="/inscription"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg border border-brand-500/40 text-brand-600 dark:text-brand-300 text-base font-semibold hover:bg-brand-500/10 dark:hover:bg-brand-500/20 transition-colors"
-                >
-                  <UserPlus className="w-4 h-4" />
-                  <span className="hidden xl:inline">Inscription</span>
-                </Link>
-              </>
+              <NavAuthMenu pathname={pathname} />
             )}
 
             <NavTooltip title="Commencer" description="Ouvrir le catalogue des cours.">
@@ -136,37 +122,20 @@ export function Header() {
             />
           ))}
 
-          <div className="flex gap-2 mt-2 pt-3 border-t border-theme">
-            {user ? (
+          {!user && <NavAuthMenu pathname={pathname} onNavigate={closeMenu} variant="mobile" />}
+
+          {user && (
+            <div className="mt-2 pt-3 border-t border-theme">
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-theme text-heading font-medium"
+                className="flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl border border-theme text-heading font-medium"
               >
                 <LogOut className="w-4 h-4" />
                 Déconnexion
               </button>
-            ) : (
-              <>
-                <Link
-                  to="/connexion"
-                  onClick={closeMenu}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-theme font-medium text-heading"
-                >
-                  <LogIn className="w-4 h-4" />
-                  Connexion
-                </Link>
-                <Link
-                  to="/inscription"
-                  onClick={closeMenu}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-brand-500/15 text-brand-700 dark:text-brand-300 font-semibold"
-                >
-                  <UserPlus className="w-4 h-4" />
-                  Inscription
-                </Link>
-              </>
-            )}
-          </div>
+            </div>
+          )}
           <Link
             to="/cours"
             onClick={closeMenu}
