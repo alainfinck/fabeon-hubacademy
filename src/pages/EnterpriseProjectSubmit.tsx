@@ -68,7 +68,7 @@ export function EnterpriseProjectSubmit() {
           <EnterpriseProjectForm />
         </div>
 
-        <div className="mt-12 max-w-4xl">
+        <div className="mt-12">
           <EquipmentByCategoryBlock
             title="Matériel disponible pour votre projet"
             description="Indiquez dans votre brief les procédés adaptés : nos apprenants interviennent sur ce parc machines réel à Illkirch-Graffenstaden."

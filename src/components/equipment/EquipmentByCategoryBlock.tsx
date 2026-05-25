@@ -1,79 +1,19 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Cpu, Factory } from 'lucide-react'
-import {
-  getAllEquipmentGroupedByCategory,
-  type EquipmentItem,
-} from '../../data/equipment'
+import { getAllEquipmentGroupedByCategory } from '../../data/equipment'
 import { SMART_FACTORY } from '../../data/smartFactory'
 import { equipmentCategoryIcons } from './equipmentCategoryIcons'
+import { EquipmentCard } from './EquipmentCard'
 
 interface Props {
   title?: string
   description?: string
-  /** compact : listes par catégorie ; detailed : cartes machines plus aérées */
+  /** compact : grille 2 colonnes ; detailed : grille 3 colonnes sur grands écrans */
   variant?: 'compact' | 'detailed'
   showFooterLink?: boolean
-  /** Affiche une vignette photo par machine (detailed uniquement) */
+  /** @deprecated Les cartes affichent toujours une photo */
   showMachinePhotos?: boolean
   className?: string
-}
-
-function MachineLine({
-  item,
-  detailed,
-  showPhoto,
-}: {
-  item: EquipmentItem
-  detailed: boolean
-  showPhoto: boolean
-}) {
-  return (
-    <li
-      className={
-        detailed && showPhoto
-          ? 'rounded-xl border border-theme-subtle bg-muted/30 p-4 flex gap-4'
-          : detailed
-            ? 'rounded-xl border border-theme-subtle bg-muted/30 p-4'
-            : ''
-      }
-    >
-      {showPhoto && detailed && (
-        <div className="w-24 sm:w-28 shrink-0 rounded-lg overflow-hidden border border-theme aspect-[4/3]">
-          <img
-            src={item.imageUrl}
-            alt={item.name}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-          <span className="font-semibold text-heading text-sm sm:text-base">{item.name}</span>
-          {item.brand && (
-            <span className="text-xs font-medium text-brand-600 dark:text-brand-400">
-              {item.brand}
-            </span>
-          )}
-        </div>
-        {detailed && (
-          <p className="text-sm text-muted mt-1.5 leading-relaxed">{item.description}</p>
-        )}
-        <ul className={`mt-2 space-y-1 ${detailed ? '' : 'mt-1'}`}>
-          {item.specs.map((spec) => (
-            <li
-              key={spec}
-              className="text-xs sm:text-sm text-body flex items-start gap-1.5 leading-snug"
-            >
-              <span className="text-brand-600 dark:text-brand-500 shrink-0 mt-1">·</span>
-              {spec}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </li>
-  )
 }
 
 export function EquipmentByCategoryBlock({
@@ -81,12 +21,13 @@ export function EquipmentByCategoryBlock({
   description = 'Équipements réels de la SmartFactory Fabéon, utilisables pour vos projets terrain et nos formations.',
   variant = 'compact',
   showFooterLink = true,
-  showMachinePhotos = false,
   className = '',
 }: Props) {
   const grouped = getAllEquipmentGroupedByCategory()
   const detailed = variant === 'detailed'
-  const withPhotos = detailed && showMachinePhotos
+  const gridClass = detailed
+    ? 'grid sm:grid-cols-2 lg:grid-cols-3 gap-5'
+    : 'grid sm:grid-cols-2 gap-4'
 
   return (
     <section
@@ -129,24 +70,11 @@ export function EquipmentByCategoryBlock({
                   {items.length}
                 </span>
               </div>
-              <ul
-                className={
-                  withPhotos
-                    ? 'space-y-3'
-                    : detailed
-                      ? 'grid sm:grid-cols-2 gap-3'
-                      : 'space-y-3 pl-1'
-                }
-              >
+              <div className={gridClass}>
                 {items.map((item) => (
-                  <MachineLine
-                    key={item.id}
-                    item={item}
-                    detailed={detailed}
-                    showPhoto={withPhotos}
-                  />
+                  <EquipmentCard key={item.id} item={item} category={category} />
                 ))}
-              </ul>
+              </div>
             </div>
           )
         })}
