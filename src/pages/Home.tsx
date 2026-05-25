@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Award, CheckCircle2 } from 'lucide-react'
 import { useData } from '../context/DataContext'
+import { HomeHeroRotatingTitle } from '../components/home/HomeHeroRotatingTitle'
 import { HomeHeroVisual } from '../components/home/HomeHeroVisual'
 import { PageError, PageLoader } from '../components/PageLoader'
 import { PartnersSection } from '../components/PartnersSection'
@@ -52,16 +53,7 @@ export function Home() {
                 <Award className="w-4 h-4" />
                 Formation impression numérique & communication visuelle
               </p>
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-heading leading-tight">
-                Maîtrisez l'art de l'
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-cyan-600 dark:from-brand-400 dark:to-cyan-300">
-                  impression
-                </span>{' '}
-                et de la{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-500 to-orange-500 dark:from-accent-400 dark:to-orange-300">
-                  fabrication
-                </span>
-              </h1>
+              <HomeHeroRotatingTitle />
               <p className="mt-5 text-xl sm:text-2xl font-display font-semibold text-heading leading-snug max-w-xl">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-cyan-600 to-accent-500 dark:from-brand-400 dark:via-cyan-400 dark:to-accent-400">
                   {HOME_SLOGAN}

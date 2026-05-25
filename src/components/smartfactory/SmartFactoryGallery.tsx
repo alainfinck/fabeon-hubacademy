@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { smartFactoryGallery } from '../../data/smartFactory'
+import { SmartFactoryGalleryLightbox } from './SmartFactoryGalleryLightbox'
 
 interface Props {
   title?: string
@@ -9,6 +11,8 @@ export function SmartFactoryGallery({
   title = 'La SmartFactory en images',
   className = '',
 }: Props) {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+
   return (
     <section className={className}>
       <h2 className="font-display text-2xl font-bold text-heading mb-2">{title}</h2>
@@ -22,29 +26,44 @@ export function SmartFactoryGallery({
         >
           fabeon.fr/smartfactory
         </a>
-        .
+        . Cliquez sur une image pour l&apos;agrandir.
       </p>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-        {smartFactoryGallery.map((photo) => (
+        {smartFactoryGallery.map((photo, index) => (
           <figure
             key={photo.src}
             className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-theme bg-muted/30"
           >
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent">
-              <span className="text-xs text-white/95 line-clamp-2 leading-snug">
-                {photo.alt}
-              </span>
-            </figcaption>
+            <button
+              type="button"
+              onClick={() => setLightboxIndex(index)}
+              className="absolute inset-0 w-full h-full cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label={`Agrandir : ${photo.alt}`}
+            >
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none"
+              />
+              <figcaption className="absolute inset-x-0 bottom-0 p-2 bg-gradient-to-t from-black/70 to-transparent pointer-events-none">
+                <span className="text-xs text-white/95 line-clamp-2 leading-snug">
+                  {photo.alt}
+                </span>
+              </figcaption>
+            </button>
           </figure>
         ))}
       </div>
+
+      {lightboxIndex !== null && (
+        <SmartFactoryGalleryLightbox
+          photos={smartFactoryGallery}
+          startIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </section>
   )
 }
