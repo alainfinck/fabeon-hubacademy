@@ -83,7 +83,7 @@ export function NavAuthMenu({ pathname, onNavigate, variant = 'desktop' }: Props
         className="nav-dropdown-panel absolute top-full right-0 opacity-0 invisible translate-y-1 group-hover/nav-auth:opacity-100 group-hover/nav-auth:visible group-hover/nav-auth:translate-y-0 group-focus-within/nav-auth:opacity-100 group-focus-within/nav-auth:visible group-focus-within/nav-auth:translate-y-0 transition-all duration-200 ease-out z-[100]"
         role="menu"
       >
-        <div className="min-w-[16rem] rounded-xl border border-theme bg-white dark:bg-slate-950 shadow-xl py-2 overflow-hidden">
+        <div className="nav-dropdown-menu">
           <p className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-faint">
             Compte
           </p>
@@ -95,10 +95,10 @@ export function NavAuthMenu({ pathname, onNavigate, variant = 'desktop' }: Props
                 key={item.to}
                 to={item.to}
                 role="menuitem"
-                className={`flex items-start gap-3 px-3 py-3 mx-1.5 rounded-lg transition-colors ${
+                className={`flex items-start gap-3 px-4 py-3 mx-2 rounded-lg transition-colors ${
                   itemActive
-                    ? 'bg-brand-500/15 text-brand-800 dark:bg-brand-500/20 dark:text-brand-100'
-                    : 'text-heading hover:bg-slate-100 dark:hover:bg-slate-900'
+                    ? 'bg-brand-500/15 text-brand-800'
+                    : 'text-slate-900 hover:bg-slate-100'
                 }`}
               >
                 <ItemIcon className="w-5 h-5 shrink-0 mt-0.5 text-brand-600 dark:text-brand-400" />

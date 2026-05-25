@@ -121,6 +121,16 @@ body {
   padding-top: 0.5rem;
 }
 
+/* Largeur identique pour tous les panneaux déroulants du header */
+.nav-dropdown-menu {
+  width: min(40rem, calc(100vw - 2rem));
+  @apply rounded-xl border border-slate-200 bg-white shadow-xl py-2.5 overflow-hidden;
+}
+
+.dark .nav-dropdown-menu {
+  @apply border-slate-700 bg-white text-slate-900;
+}
+
 .group\/nav-cat:hover .nav-dropdown-panel,
 .group\/nav-cat:focus-within .nav-dropdown-panel,
 .group\/nav-auth:hover .nav-dropdown-panel,
