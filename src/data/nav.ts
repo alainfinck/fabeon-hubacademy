@@ -204,6 +204,11 @@ export function isNavItemActive(to: string, pathname: string): boolean {
   return pathname === to || pathname.startsWith(`${to}/`)
 }
 
+const navDirectPaths = new Set(navDirectLinks.map((link) => link.to))
+
 export function isCategoryActive(category: NavCategory, pathname: string): boolean {
-  return category.items.some((item) => isNavItemActive(item.to, pathname))
+  return category.items.some(
+    (item) =>
+      !navDirectPaths.has(item.to) && isNavItemActive(item.to, pathname)
+  )
 }
