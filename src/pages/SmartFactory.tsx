@@ -1,16 +1,10 @@
 import { Link } from 'react-router-dom'
-import {
-  ArrowRight,
-  Factory,
-  Leaf,
-  Mail,
-  MapPin,
-  ExternalLink,
-} from 'lucide-react'
+import { ArrowRight, Factory, Leaf, MapPin, ExternalLink } from 'lucide-react'
 import { CardCoverImage } from '../components/CardCoverImage'
 import { EquipmentByCategoryBlock } from '../components/equipment/EquipmentByCategoryBlock'
 import { EquipmentCard } from '../components/equipment/EquipmentCard'
 import { SmartFactoryGallery } from '../components/smartfactory/SmartFactoryGallery'
+import { SmartFactoryProjectSection } from '../components/smartfactory/SmartFactoryProjectSection'
 import { EquipmentRelatedFormations } from '../components/equipment/EquipmentRelatedFormations'
 import { getAllEquipmentWithCategory } from '../data/equipment'
 import {
@@ -62,13 +56,13 @@ export function SmartFactory() {
                 <MapPin className="w-4 h-4 text-brand-600 dark:text-brand-500 shrink-0" />
                 {CONTACT.addressFull}
               </p>
-              <a
-                href={`mailto:${SMART_FACTORY.contactEmail}?subject=Projet%20SmartFactory`}
+              <Link
+                to="/projets-entreprises/deposer"
                 className="inline-flex items-center gap-2 mt-6 px-5 py-2.5 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold text-sm transition-colors w-fit"
               >
-                <Mail className="w-4 h-4" />
-                Une demande, un projet ? {SMART_FACTORY.contactEmail}
-              </a>
+                Déposer une demande de projet
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
             <div className="relative min-h-[220px] lg:min-h-full bg-muted/30 border-t lg:border-t-0 lg:border-l border-theme">
               <img
@@ -159,6 +153,8 @@ export function SmartFactory() {
           </div>
         </section>
 
+        <SmartFactoryProjectSection />
+
         <section className="rounded-3xl border border-emerald-500/25 bg-emerald-500/5 p-6 sm:p-10 mb-12">
           <div className="flex items-center gap-2 mb-6">
             <Leaf className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -177,13 +173,6 @@ export function SmartFactory() {
         </section>
 
         <div className="flex flex-wrap gap-3 justify-center">
-          <Link
-            to="/projets-entreprises/deposer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold transition-colors"
-          >
-            Déposer un projet
-            <ArrowRight className="w-5 h-5" />
-          </Link>
           <Link
             to="/materiel"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-theme font-semibold text-heading hover:border-brand-500/40 transition-colors"

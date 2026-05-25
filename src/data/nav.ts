@@ -36,6 +36,23 @@ export interface NavCategory {
   items: NavItem[]
 }
 
+/** Liens de premier niveau dans le header (sans sous-menu). */
+export interface NavDirectLink {
+  id: string
+  to: string
+  label: string
+  icon: LucideIcon
+}
+
+export const navDirectLinks: NavDirectLink[] = [
+  {
+    id: 'smartfactory',
+    to: SMART_FACTORY.path,
+    label: 'SmartFactory',
+    icon: Factory,
+  },
+]
+
 export const navCategories: NavCategory[] = [
   {
     id: 'formation',

@@ -66,7 +66,7 @@ export function HomeSmartFactorySection() {
                   {service.title}
                 </h3>
                 <p className="text-sm text-muted mt-2 line-clamp-2">
-                  {service.paragraphs?.[0] ?? service.list?.[0]}
+                  {'paragraphs' in service ? service.paragraphs[0] : service.list[0]}
                 </p>
               </div>
             </Link>

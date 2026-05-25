@@ -26,9 +26,16 @@ interface Props {
   pathname: string
   onNavigate?: () => void
   variant?: 'desktop' | 'mobile'
+  /** Bouton intégré dans un groupe header (Compte + Commencer). */
+  embedded?: boolean
 }
 
-export function NavAuthMenu({ pathname, onNavigate, variant = 'desktop' }: Props) {
+export function NavAuthMenu({
+  pathname,
+  onNavigate,
+  variant = 'desktop',
+  embedded = false,
+}: Props) {
   const active = isAuthActive(pathname)
 
   if (variant === 'mobile') {
@@ -65,12 +72,12 @@ export function NavAuthMenu({ pathname, onNavigate, variant = 'desktop' }: Props
   }
 
   return (
-    <div className="group/nav-auth relative">
+    <div className={`group/nav-auth relative ${embedded ? 'flex' : ''}`}>
       <button
         type="button"
-        className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg transition-colors whitespace-nowrap ${
-          active ? 'nav-active' : 'nav-item'
-        }`}
+        className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 transition-colors whitespace-nowrap ${
+          embedded ? 'rounded-none h-full border-r border-theme' : 'rounded-lg'
+        } ${active ? 'nav-active' : 'nav-item'}`}
         aria-haspopup="true"
         aria-expanded="false"
       >

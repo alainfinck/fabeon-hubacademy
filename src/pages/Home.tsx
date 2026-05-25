@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom'
-import {
-  ArrowRight,
-  Award,
-  Play,
-  CheckCircle2,
-} from 'lucide-react'
+import { ArrowRight, Award, CheckCircle2 } from 'lucide-react'
 import { useData } from '../context/DataContext'
-import { CategoryIcon } from '../components/CategoryIcon'
+import { HomeHeroVisual } from '../components/home/HomeHeroVisual'
 import { PageError, PageLoader } from '../components/PageLoader'
 import { PartnersSection } from '../components/PartnersSection'
 import { HomeProDepositSection } from '../components/home/HomeProDepositSection'
@@ -107,42 +102,7 @@ export function Home() {
               </ul>
             </div>
 
-            <div className="relative hidden lg:block">
-              <div className="max-w-md mx-auto rounded-3xl hero-card border p-6 shadow-xl dark:shadow-2xl">
-                <p className="text-xs font-semibold uppercase tracking-wider text-faint mb-3">
-                  7 thématiques — parcours & ateliers
-                </p>
-                <div className="space-y-2 max-h-[22rem] overflow-y-auto pr-1">
-                  {heroCategories.map((cat) => (
-                    <Link
-                      key={cat.id}
-                      to={`/formation-en-ligne?theme=${cat.id}`}
-                      className="block p-3 rounded-xl hero-card-inner border hover:border-brand-500/30 transition-colors group"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-9 h-9 rounded-lg bg-gradient-to-br ${cat.color} flex items-center justify-center shrink-0`}
-                        >
-                          <CategoryIcon name={cat.icon} className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="text-sm font-medium text-body group-hover:text-brand-600 dark:group-hover:text-brand-300">
-                          {cat.label}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-                <div className="mt-6 flex items-center gap-3 p-4 rounded-xl bg-brand-500/10 border border-brand-500/20">
-                  <div className="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center">
-                    <Play className="w-5 h-5 text-white ml-0.5" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-heading">Reprendre la leçon</p>
-                    <p className="text-xs text-muted">Delta E — Interprétation</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <HomeHeroVisual categories={heroCategories} />
           </div>
         </div>
       </section>
