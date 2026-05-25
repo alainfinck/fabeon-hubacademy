@@ -33,12 +33,16 @@ export function SmartFactory() {
         fallbackSeed={coverFallbackSeed('smartfactory-hero')}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative">
-        <div className="rounded-2xl card-base border px-4 sm:px-6 py-4 shadow-lg dark:shadow-xl inline-flex flex-wrap items-center gap-2">
-          <Factory className="w-5 h-5 text-brand-600 dark:text-brand-400" />
-          <span className="font-display font-bold text-heading">{SMART_FACTORY.title}</span>
-          <span className="text-sm text-muted hidden sm:inline">·</span>
-          <span className="text-sm text-muted">{SMART_FACTORY.tagline}</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+        <div className="rounded-2xl border border-slate-200 bg-white px-5 sm:px-7 py-4 sm:py-5 shadow-xl ring-1 ring-black/5 inline-flex flex-wrap items-center gap-2.5 dark:border-slate-600 dark:bg-slate-900 dark:shadow-2xl dark:ring-white/10">
+          <Factory className="w-6 h-6 text-brand-600 dark:text-brand-400 shrink-0" />
+          <span className="font-display text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+            {SMART_FACTORY.title}
+          </span>
+          <span className="text-slate-400 hidden sm:inline dark:text-slate-500">·</span>
+          <span className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-snug">
+            {SMART_FACTORY.tagline}
+          </span>
         </div>
       </div>
 
